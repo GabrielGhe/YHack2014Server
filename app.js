@@ -9,8 +9,21 @@ var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 
+//-------------------------------------------
+// mongoose
+var mongoose = require('mongoose');
+if (process.env.NODE_ENV === 'production') {
+    mongoose.connect('mongodb://cmg427:First Heroku App@kahana.mongohq.com:10034/app28150436');
+} else {
+    mongoose.connect('mongodb://localhost/codesemble');
+}
+mongoose.connection.on('error', function() {
+  console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
+});
+
 var app = express();
 
+// -------------------------------------------
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -29,7 +42,6 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/users', user.list);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
