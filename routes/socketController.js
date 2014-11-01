@@ -26,7 +26,10 @@ module.exports.init = function(httpServer){
 
 module.exports.emitter = function(data) {
 	if (myIO) {
-		if(data.writing == 'True'){
+
+		var write = isWritingEnabled(data);
+
+		if(write && data.writing == 'True'){
 			myIO.sockets.emit('updateDataPoints', {
 				x: data.xValue,
 				y: data.yValue,
@@ -36,6 +39,13 @@ module.exports.emitter = function(data) {
 			myIO.sockets.emit('toggleWriting', false);
 		}
 	}
+}
+
+function isWritingEnable(data){
+	var initZ = data.initZ;
+	var realZ = data.zValue;
+
+	return (abs(initZ-realZ) < 10)
 }
 
 
