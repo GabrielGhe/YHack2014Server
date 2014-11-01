@@ -149,20 +149,22 @@ namespace KinectHandTracking
                                     if (body.HandRightState == HandState.Lasso)
                                     {
                                         timer = timer == null ? Stopwatch.StartNew() : timer;
-                                        currWritingX = tipRight.Position.X;
-                                        currWritingY = tipRight.Position.Y;
+                                        currWritingX = currWritingX == 0 ? tipRight.Position.X : currWritingX;
+                                        currWritingY = currWritingY == 0 ? tipRight.Position.Y : currWritingY;
                                         if (tipRight.Position.X < currWritingX - 0.2 || tipRight.Position.X > currWritingX + 0.2
                                             || tipRight.Position.Y < currWritingY - 0.2 || tipRight.Position.Y > currWritingY + 0.2)
                                         {
                                             timer = null;
                                             //timer = Stopwatch.StartNew();
                                         }
-                                        else if (timer != null && timer.ElapsedMilliseconds >= 3000)
-                                        {
+										else if (timer != null && timer.ElapsedMilliseconds >= 1000)
+										{
                                             timer = null;
                                             writingDepth = tipRight.Position.Z;
                                             writing = true;
-                                        }
+                                            currWritingX = 0;
+                                            currWritingY = 0;
+										}
                                     }
 
                                 }
@@ -170,19 +172,21 @@ namespace KinectHandTracking
                                 if (body.HandRightState == HandState.Open)
                                 {
                                     timer = timer == null ? Stopwatch.StartNew() : timer;
-                                    currStopWritingX = tipRight.Position.X;
-                                    currStopWritingY = tipRight.Position.Y;
+                                    currStopWritingX = currStopWritingX == 0 ? tipRight.Position.X : currStopWritingX;
+                                    currStopWritingY = currStopWritingY == 0 ? tipRight.Position.Y : currStopWritingY;
                                     if (tipRight.Position.X < currStopWritingX - 0.2 || tipRight.Position.X > currStopWritingX + 0.2
                                         || tipRight.Position.Y < currStopWritingY - 0.2 || tipRight.Position.Y > currStopWritingY + 0.2)
                                     {
                                         timer = null;
                                         //timer = Stopwatch.StartNew();
                                     }
-                                    else if (timer != null && timer.ElapsedMilliseconds >= 1500)
+                                    else if (timer != null && timer.ElapsedMilliseconds >= 1000)
                                     {
                                         writing = false;
                                         sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                         timer = null;
+                                        currStopWritingX = 0;
+                                        currStopWritingY = 0;
                                     }
                                 }
 
@@ -193,9 +197,8 @@ namespace KinectHandTracking
                                 tblRightPos.Text = "X: " + tipRight.Position.X.ToString() + " \nY: " + tipRight.Position.Y.ToString() + " \nZ: " + tipRight.Position.Z.ToString();
 
                                 sendTimer = sendTimer == null ? Stopwatch.StartNew() : sendTimer;
-
-                                if (writing && sendTimer.ElapsedMilliseconds >= 35) 
-                                { 
+								if (writing && sendTimer.ElapsedMilliseconds >= 40)
+s                                { 
                                     sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                     sendTimer = null;
                                     sendTimer = Stopwatch.StartNew();
@@ -219,7 +222,6 @@ namespace KinectHandTracking
                 data["initZ"] = writingDepth.ToString(); ;
 
                 var response = wb.UploadValues(url, "POST", data);
-                System.Threading.Thread.Sleep(50);
             }
         }
 
