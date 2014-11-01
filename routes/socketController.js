@@ -29,6 +29,7 @@ module.exports.init = function(httpServer){
 		 socket.on('newData', function(x){
 		 	// Way to emit message to all connected clients
 		 	// io.sockets.emit('newMsg', msg);
+		 	console.log('x:'+x);
 		 	socket.broadcast.emit('test',x);
 		 });
 
@@ -44,9 +45,7 @@ module.exports.init = function(httpServer){
 		 		y:Y%500
 			 });
 
-			 console.log('Sending data');
 		 },500);
-
 
 
 		 socket.on('doneTyping', function(){
