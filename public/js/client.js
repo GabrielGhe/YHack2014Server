@@ -64,6 +64,7 @@ var isUserWriting = true;
 			);
 
 		} else {
+			lastPoint = null;
 			ctx.arc( 
 				data.x * window.innerWidth,
 				data.y * window.innerHeight, 
@@ -73,7 +74,7 @@ var isUserWriting = true;
 		lastPoint = {
 			x: data.x * window.innerWidth,
 			y: data.y * window.innerHeight
-		};		
+		};
 
 		ctx.stroke();
 	});
@@ -101,6 +102,7 @@ function resizeCanvas() {
     c.width = window.innerWidth;
     c.height = window.innerHeight;
     if (ctx) {
+    	ctx.lineWidth = 2;
     	ctx.translate(c.width/2, c.height/2);
 	 		ctx.rotate(getRadianAngle(180));
 			ctx.scale(-1, 1);
