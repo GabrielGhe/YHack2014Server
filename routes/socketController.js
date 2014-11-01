@@ -45,7 +45,14 @@ function isWritingEnabled(data){
 	var initZ = parseFloat(data.initZ);
 	var realZ = parseFloat(data.zValue);
 
-	return (Math.abs(initZ-realZ) < 0.12)
+	console.log("initZ - 0.04", initZ-0.04);
+	console.log("initZ + 0.07", initZ+0.07);
+	console.log("realZ", realZ);
+
+	if(realZ > initZ+0.06)
+		return false;
+	else 
+		return true;
 }
 
 
