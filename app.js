@@ -16,7 +16,7 @@ var mongoose = require('mongoose');
 if (process.env.NODE_ENV === 'production') {
 
 } else {
-    mongoose.connect('mongodb://localhost/whiteboard');
+    mongoose.connect('mongodb://terabites.azurewebsites.net/whiteboard');
 }
 mongoose.connection.on('error', function() {
   console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');

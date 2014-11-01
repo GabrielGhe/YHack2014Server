@@ -18,9 +18,10 @@
 		event.preventDefault();
 
 		$('.global_container').animate({
-		    top: '-115%',
+		    top: '-100%',
 			  }, 2000, function() {
 			});
+		$('#global_container_1').css('padding','0');
 		
 	});
 
