@@ -5,6 +5,12 @@ html, body {
   overflow: hidden;
 }
 
+canvas { 
+	display:block; 
+	-webkit-box-shadow: inset 0 0 100px rgba(0,0,255,.4);
+
+}
+
 .global_container {
   position:relative;
   padding:0 0 0 0 ;
@@ -23,20 +29,62 @@ html, body {
 #inner_container {
 	position: relative;
 	top:50%;
-	width:500px;
+	width:100%;
 	height:300px;
 	margin: auto auto;
 }
 
+#user_info {
+	position: fixed;
+	top:50px;left:50px;
+	font-size: 30px;
+	color:rgba(0,0,0,0.8);
+	display: none;
+}
+
+#typer_welcome {
+	color:rgba(0,0,0,0.7);
+	font-size: 50px;
+	margin-bottom: 50px;
+	height:50px;
+}
+
+#user_icon {
+	font-size: 40px;
+	margin-right: 20px;
+}
+
+.user_params {
+	position: fixed;
+	bottom:50px;left:50px;
+	font-size: 20px;
+	color:rgba(0,0,0,0.8);
+	display: none;
+}
+
 input[type="text"] {
 	padding: 10px;
-	width: 90%;
+	width: 40%;
 	font-family: 'Calibri';
-	font-size: 18px;
-	border: 5px solid rgba(0,0,0,0.2);
-	-webkit-transition:all .5s;
+	font-size: 30px;
+	-moz-box-shadow: 0 0 10px #222;
+	-webkit-box-shadow: 0 0 10px #222;
+	box-shadow: 0 0 10px #222;
+	-webkit-transition: all .5s;
+	background-color: rgba(255,255,255,0.1);
+	outline: 0;
+	color:rgba(0,0,0,0.5);
+	text-align: center;
 }
+
 input[type="text"]:focus {
-  	border: 5px solid rgba(0,0,0,0.4);
+  	-moz-box-shadow: 0 0 20px #000;
+	-webkit-box-shadow: 0 0 20px #000;
+	box-shadow: 0 0 20px #000;
   	outline:0;
+}
+
+
+.typed-cursor{
+    display: none;
 }
