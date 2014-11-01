@@ -43,5 +43,14 @@
 		ctx.stroke();
 	});
 
+		/*
+	 *	Manage the user successful connection
+	 */
+	socket.on('test', function(data){
+		console.log(data);
+	});
+
+
+
 
 })(jQuery);

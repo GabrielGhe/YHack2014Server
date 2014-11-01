@@ -26,10 +26,10 @@ module.exports.init = function(httpServer){
 		/*
 		 *	Message received
 		 */
-		 socket.on('newData', function(msg){
+		 socket.on('newData', function(data){
 		 	// Way to emit message to all connected clients
-		 	io.sockets.emit('newMsg', msg);
-
+		 	// io.sockets.emit('newMsg', msg);
+		 	socket.broadcast.emit('test', data);
 		 });
 
 
