@@ -43,17 +43,17 @@
 		console.log("context height", c.height);
 		console.log("context width", c.width);
 		
-		ctx.arc( 
-			1000 - (data.x*100) + 500,
-			500 - (data.y*100) + 250, 
-			2, 0, 2 * Math.PI, true);
-
-		// ctx.fillRect(
+		// ctx.arc( 
 		// 	(data.x*100) + 500,
-		// 	(data.y*100) + 250,
-		// 	10,
-		// 	10
-		// );
+		// 	(data.y*100) + 250, 
+		// 	1, 0, 2 * Math.PI, true);
+
+		ctx.fillRect(
+			data.x*100,
+			data.y*100,
+			5,
+			5
+		);
 
 		ctx.stroke();
 	});
