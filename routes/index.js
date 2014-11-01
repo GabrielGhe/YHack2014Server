@@ -9,4 +9,5 @@ exports.index = function(req, res){
 
 exports.csharp = function(req, res){
   console.log("yataaa");
+  res.end();
 };

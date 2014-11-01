@@ -16,7 +16,7 @@ var mongoose = require('mongoose');
 if (process.env.NODE_ENV === 'production') {
 
 } else {
-    mongoose.connect('mongodb://terabites.azurewebsites.net/whiteboard');
+    mongoose.connect('mongodb://localhost/whiteboard');
 }
 mongoose.connection.on('error', function() {
   console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
@@ -43,7 +43,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/csharp', routes.csharp);
+app.post('/csharp', routes.csharp);
 
 var httpServer = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

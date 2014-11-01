@@ -6,7 +6,7 @@
  (function($){
 
 	// Create connection to the socket
-	var socket = io.connect('172.26.5.120:3000');
+	var socket = io.connect('172.26.5.118:3000');
 
 	var c = document.getElementById("myCanvas");
 	var ctx = c.getContext("2d");
@@ -48,8 +48,5 @@
 	socket.on('test', function(x){
 		console.log('('+x+')');
 	});
-
-
-
 
 })(jQuery);
