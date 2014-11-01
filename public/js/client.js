@@ -1,6 +1,7 @@
 
 var c,ctx;
 var lastPoint;
+var clearLastPoint;
 
 // Color variables
 var colors = ['black','red'];
@@ -63,7 +64,6 @@ var isUserWriting = true;
 			);
 
 		} else {
-			lastPoint = null;
 			ctx.arc( 
 				data.x * window.innerWidth,
 				data.y * window.innerHeight, 
@@ -74,16 +74,11 @@ var isUserWriting = true;
 			x: data.x * window.innerWidth,
 			y: data.y * window.innerHeight
 		};
+		clearInterval(clearLastPoint);
 
-		ctx.save();
-		if (writing) {
-			ctx.strokeStyle = "#rgba(255,255,255,0.5)";
-		}
-		ctx.arc( 
-			data.x * window.innerWidth,
-			data.y * window.innerHeight, 
-			2, 0, 2 * Math.PI, true);
-		ctx.restore();
+		clearLastPoint = setTimeout(function(){
+			lastPoint = null;
+		}, 600);
 
 		ctx.stroke();
 	});

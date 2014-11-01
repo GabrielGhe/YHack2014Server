@@ -111,7 +111,7 @@ input[type="text"]:focus {
 
 #writing_enable {
 	float:right;
-	display: block;
+	display: none;
 	padding:5px;
 	font-weight: bold;
 	color:rgba(0,255,0,0.7);
@@ -121,7 +121,7 @@ input[type="text"]:focus {
 
 #writing_disable {
 	float:right;
-	display: none;
+	display: block;
 	padding:5px;
 	font-weight: bold;
 	color:rgba(255,0,0,0.7);

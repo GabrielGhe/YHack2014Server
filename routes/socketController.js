@@ -41,11 +41,11 @@ module.exports.emitter = function(data) {
 	}
 }
 
-function isWritingEnable(data){
-	var initZ = data.initZ;
-	var realZ = data.zValue;
+function isWritingEnabled(data){
+	var initZ = parseFloat(data.initZ);
+	var realZ = parseFloat(data.zValue);
 
-	return (abs(initZ-realZ) < 10)
+	return (Math.abs(initZ-realZ) > 0.10)
 }
 
 
