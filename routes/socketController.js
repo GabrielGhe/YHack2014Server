@@ -3,9 +3,15 @@
  *	Socket controller
  */
 
+
 module.exports.init = function(httpServer){
 	
 	var io = require('socket.io').listen(httpServer);
+
+
+	// Test variables
+	var X = 0;
+	var Y = 0;
 
 	/*
 	 *	Open socket
@@ -21,11 +27,26 @@ module.exports.init = function(httpServer){
 		 *	Message received
 		 */
 		 socket.on('newData', function(msg){
-
 		 	// Way to emit message to all connected clients
 		 	io.sockets.emit('newMsg', msg);
 
 		 });
+
+
+		 // The following code will be placed in the onDataReceive function
+		 // when the data is transfered from the C# server to here.
+		 setInterval(function(){
+		 	 X += 50;
+		 	 Y += 10;
+		 	 
+			 socket.broadcast.emit('updateDataPoints', {
+		 		x:X%1000,
+		 		y:Y%500
+			 });
+
+			 console.log('Sending data');
+		 },500);
+
 
 
 		 socket.on('doneTyping', function(){
