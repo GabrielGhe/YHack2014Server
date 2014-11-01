@@ -6,7 +6,7 @@
  (function($){
 
 	// Create connection to the socket
-	var socket    = io.connect('http://localhost:1337');
+	var socket = io.connect('http://localhost:1337');
 
 	/*	Way to send messages to server	
 
