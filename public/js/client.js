@@ -32,21 +32,15 @@
 	/*
 	 *	Manage the user successful connection
 	 */
-	socket.on('updateDataPoints', function(wrapper){
-		ctx.clearRect(0,0,1000,500);
+	socket.on('updateDataPoints', function(data){
+		// ctx.clearRect(0,0,1000,500);
 
 		ctx.beginPath();
-		ctx.moveTo(wrapper.x, wrapper.y);
-		ctx.lineTo(1000,500);
+		
+		ctx.fillRect(data.xValue*100, data.yValue*100,1,1);
 
 		ctx.stroke();
 	});
 
-		/*
-	 *	Manage the user successful connection
-	 */
-	socket.on('test', function(x){
-		console.log('('+x+')');
-	});
 
 })(jQuery);
