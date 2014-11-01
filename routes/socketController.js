@@ -45,7 +45,7 @@ module.exports.init = function(httpServer){
 			 });
 
 			 console.log('Sending data');
-		 },5);
+		 },500);
 
 
 
