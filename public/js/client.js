@@ -8,22 +8,14 @@
 	// Create connection to the socket
 	var socket    = io.connect('http://localhost:1337');
 
-	// On form validation send emit the login event to the server
-	// It'll create a new user
-	$('#loginform').submit(function(event){
-		event.preventDefault();
+	/*	Way to send messages to server	
 
-		// Proceed only if the username is not taken
-		if(!userTaken){
+		socket.emit('login', {
+			username: $('#username').val(),
+			mail	: $('#mail').val()
+		});
+	*/
 
-			socket.emit('login', {
-				username: $('#username').val(),
-				mail	: $('#mail').val()
-			});
-
-		}		
-
-	});
 
 
 	/*********************************************************************
