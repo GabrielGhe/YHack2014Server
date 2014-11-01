@@ -76,14 +76,15 @@ var isUserWriting = true;
 		};
 
 		ctx.save();
-		ctx.drawImage(
-			document.getElementById('hand'),
-			data.x * window.innerWidth - 10,
-			data.y * window.innerHeight - 10,
-			20,
-			20
-		);
+		if (writing) {
+			ctx.strokeStyle = "#rgba(255,255,255,0.5)";
+		}
+		ctx.arc( 
+			data.x * window.innerWidth,
+			data.y * window.innerHeight, 
+			2, 0, 2 * Math.PI, true);
 		ctx.restore();
+
 		ctx.stroke();
 	});
 
