@@ -46,8 +46,8 @@
 		/*
 	 *	Manage the user successful connection
 	 */
-	socket.on('test', function(x,y){
-		console.log('('+x+';'+y+')');
+	socket.on('test', function(x){
+		console.log('('+x+')');
 	});
 
 
