@@ -2,6 +2,7 @@
 var c,ctx,overlayCtx,overlayc;
 var lastPoint;
 var clearLastPoint;
+var movingBoard = false;
 
 // Color variables
 var colors = ['black','red'];
@@ -12,6 +13,7 @@ var color_selected = 0;
 var isUserWriting = true;
 
 var radius = 5;
+var expansionVar = 1.2;
 
 /*
  *	Client for Socket.IO
@@ -54,7 +56,6 @@ drawCircle(0,0);
 		
 	});
 
-
 	/*********************************************************************
 	 *					RECEIVING EVENTS & HANDLING THEM
 	 *********************************************************************/
@@ -69,20 +70,20 @@ drawCircle(0,0);
 		if (lastPoint) {
 			ctx.moveTo(lastPoint.x, lastPoint.y);		
 			ctx.lineTo(
-				data.x * window.innerWidth, 
-				data.y * window.innerHeight
+				data.x * window.innerWidth / expansionVar,
+				data.y * window.innerHeight  / expansionVar
 			);
 
 		} else {
 			ctx.arc( 
-				data.x * window.innerWidth,
-				data.y * window.innerHeight, 
+				data.x * window.innerWidth / expansionVar,
+				data.y * window.innerHeight / expansionVar,
 				1, 0, 2 * Math.PI, true);
 		}
 
 		lastPoint = {
-			x: data.x * window.innerWidth,
-			y: data.y * window.innerHeight
+			x: data.x * window.innerWidth / expansionVar,
+			y: data.y * window.innerHeight / expansionVar
 		};
 		clearInterval(clearLastPoint);
 
@@ -120,21 +121,6 @@ drawCircle(0,0);
 			$("#writing_disable").css('display','block');
 		}
 	});
-
-	socket.on('moveBoard', function(data){
-		// data.x;
-		console.log(data.y);
-
-		// shift everything to the left:
-		var imageData = ctx.getImageData(0, 0, c.width, c.height);
-		ctx.putImageData(imageData, data.x, data.y);
-		// now clear the right-most pixels:
-		ctx.clearRect(c.width-1, 0, 1, c.height);
-	});
-
-
-	
-
 
 })(jQuery);
 
