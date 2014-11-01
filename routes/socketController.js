@@ -31,8 +31,8 @@ module.exports.emitter = function(data) {
 
 		if(data.moveBoard == 'True'){
 			myIO.sockets.emit('moveBoard', {
-				x: data.moveBoardX,
-				y: data.moveBoardY
+				x: data.xValue,
+				y: data.yValue
 			})
 		}else {
 			if(write && data.writing == 'True'){

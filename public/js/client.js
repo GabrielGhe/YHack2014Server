@@ -27,13 +27,15 @@ var radius = 5;
 	overlayc = document.getElementById("canvasOverlay");
 	overlayCtx = overlayc.getContext("2d");
 
+
+
 	// resize the canvas to fill browser window dynamically
 	window.addEventListener('resize', resizeCanvas, false);
 	// window.addEventListener('resize', resizeOverlayCanvas, false);
 	resizeCanvas();
 	resizeOverlayCanvas();
 
-
+drawCircle(0,0);
 	// On form validation send emit the login event to the server
 	// It'll create a new user
 	$('#loginform').submit(function(event){
@@ -120,13 +122,12 @@ var radius = 5;
 	});
 
 	socket.on('moveBoard', function(data){
-		data.x;
-		data.y;
-
+		// data.x;
+		console.log(data.y);
 
 		// shift everything to the left:
-		var imageData = ctx.getImageData(1, 0, data.x, data.y);
-		ctx.putImageData(imageData, 0, 0);
+		var imageData = ctx.getImageData(0, 0, c.width, c.height);
+		ctx.putImageData(imageData, data.x, data.y);
 		// now clear the right-most pixels:
 		ctx.clearRect(c.width-1, 0, 1, c.height);
 	});
