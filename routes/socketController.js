@@ -40,10 +40,10 @@ module.exports.init = function(httpServer){
 		 	 X += 50;
 		 	 Y += 10;
 
-			 socket.broadcast.emit('updateDataPoints', {
-		 		x:X%1000,
-		 		y:Y%500
-			 });
+			 // socket.broadcast.emit('updateDataPoints', {
+		 	// 	x:X%1000,
+		 	// 	y:Y%500
+			 // });
 
 		 },500);
 
@@ -57,7 +57,10 @@ module.exports.init = function(httpServer){
 
 module.exports.emitter = function(data) {
 	if (myIO) {
-		myIO.sockets.emit('test', data.xValue);
+		myIO.sockets.emit('updateDataPoints', {
+			x: data.xValue,
+			y: data.yValue
+		});
 	}
 }
 
