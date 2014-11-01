@@ -13,6 +13,9 @@
 
 	ctx.translate(c.width/2, c.height/2);
  	ctx.rotate(getRadianAngle(180));
+ 	
+ 	ctx.translate(1000, 0);
+	ctx.scale(-1, 1);
 
 	// On form validation send emit the login event to the server
 	// It'll create a new user
