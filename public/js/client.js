@@ -11,6 +11,9 @@
 	var c = document.getElementById("myCanvas");
 	var ctx = c.getContext("2d");
 
+	ctx.translate(c.width/2, c.height/2);
+ 	ctx.rotate(getRadianAngle(180));
+
 	// On form validation send emit the login event to the server
 	// It'll create a new user
 	$('#loginform').submit(function(event){
@@ -57,3 +60,8 @@
 
 
 })(jQuery);
+
+
+function getRadianAngle(degreeValue) {
+    return degreeValue * Math.PI / 180;
+} 
