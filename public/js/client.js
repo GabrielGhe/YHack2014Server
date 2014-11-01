@@ -6,7 +6,7 @@
  (function($){
 
 	// Create connection to the socket
-	var socket = io.connect('http://terabites.azurewebsites.net:3000');
+	var socket = io.connect('http://terabites.azurewebsites.net');
 
 
 	var c = document.getElementById("myCanvas");
