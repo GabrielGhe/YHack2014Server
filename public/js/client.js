@@ -13,24 +13,6 @@ var isUserWriting = true;
 
 var radius = 5;
 
-function drawCircle(mouseX, mouseY){
-  // Clear the background
-  overlayc.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Establish the circle path
-  overlayc.beginPath();
-  overlayc.arc(mouseX, mouseY, radius, 0 , 2 * Math.PI, false);
-  
-  // Fill the circle
-  overlayc.fillStyle = '00F0FF';
-  overlayc.fill();
-  
-  // Outline (stroke) the circle
-  overlayc.lineWidth = 4;
-  overlayc.strokeStyle = 'black';
-  overlayc.stroke();
-}
-
 /*
  *	Client for Socket.IO
  */
@@ -120,7 +102,7 @@ function drawCircle(mouseX, mouseY){
 
 	socket.on('clearOverlay', function(){
 		// Clear the background
-		overlayCtx.clearRect(0, 0, overlayc.width, overlayc.height);
+		overlayCtx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), overlayc.width, overlayc.height);
 	})
 
 	/*
@@ -158,7 +140,28 @@ function drawCircle(mouseX, mouseY){
 
 function getRadianAngle(degreeValue) {
     return degreeValue * Math.PI / 180;
-} 
+}
+
+function drawCircle(mouseX, mouseY){
+  // Clear the background
+  overlayCtx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), overlayc.width, overlayc.height);
+  
+  // Establish the circle path
+  overlayCtx.beginPath();
+  overlayCtx.arc(
+  	mouseX * window.innerWidth,
+  	mouseY * window.innerHeight,
+  	radius, 0 , 2 * Math.PI, false);
+  
+  // Fill the circle
+  overlayCtx.fillStyle = '00F0FF';
+  overlayCtx.fill();
+  
+  // Outline (stroke) the circle
+  overlayCtx.lineWidth = 4;
+  overlayCtx.strokeStyle = 'black';
+  overlayCtx.stroke();
+}
 
 function resizeCanvas() {
     c.width = window.innerWidth;
