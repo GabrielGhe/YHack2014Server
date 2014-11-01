@@ -37,7 +37,18 @@
 
 		ctx.beginPath();
 		
-		ctx.fillRect(data.xValue*100, data.yValue*100,1,1);
+
+		ctx.arc( 
+			c.width - (data.x*100) + 500,
+			c.height - (data.y*100) + 250, 
+			2, 0, 2 * Math.PI, true);
+
+		// ctx.fillRect(
+		// 	(data.x*100) + 500,
+		// 	(data.y*100) + 250,
+		// 	10,
+		// 	10
+		// );
 
 		ctx.stroke();
 	});
