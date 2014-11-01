@@ -37,10 +37,12 @@
 
 		ctx.beginPath();
 		
-
+		console.log("context height", c.height);
+		console.log("context width", c.width);
+		
 		ctx.arc( 
-			c.width - (data.x*100) + 500,
-			c.height - (data.y*100) + 250, 
+			1000 - (data.x*100) + 500,
+			500 - (data.y*100) + 250, 
 			2, 0, 2 * Math.PI, true);
 
 		// ctx.fillRect(
