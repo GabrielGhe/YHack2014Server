@@ -7,9 +7,27 @@
     
   </head>
   <body>
-    <p>Welcome tes </p>
-    
-    <canvas id="myCanvas" width="1000" height="500" style="border:1px solid #d3d3d3;">
+
+    <!-- FIRST CONTAINER TO LOGIN -->
+	<div class="global_container" id="global_container_1">
+		<div id="login_block">
+			<div id="inner_container">
+				<form action ="" id="loginform">
+					<input type="text" placeholder="Enter your email"></input>
+					<p class="submit">
+						<input type="submit" value="Login" id="submit_login">
+					</p>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- END OF FIRST CONTAINER -->
+
+	<!-- SECOND CONTAINER TO CHAT -->
+	<div class="global_container" id="global_container_2">
+		<canvas id="myCanvas" width="1000" height="500" style="border:1px solid #d3d3d3;">
+   	</div>
+
 
     <script src="/bower_components/jquery/dist/jquery.min.js" type="text/javascript"></script>
     <script src="/bower_components/socket.io-client/socket.io.js" type="text/javascript"></script>

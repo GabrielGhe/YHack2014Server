@@ -38,14 +38,14 @@ module.exports.init = function(httpServer){
 		 setInterval(function(){
 		 	 X += 50;
 		 	 Y += 10;
-		 	 
+
 			 socket.broadcast.emit('updateDataPoints', {
 		 		x:X%1000,
 		 		y:Y%500
 			 });
 
 			 console.log('Sending data');
-		 },500);
+		 },5);
 
 
 
