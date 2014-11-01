@@ -1,5 +1,0 @@
-
-
-/*
- *	Client for Socket.IO
- */
