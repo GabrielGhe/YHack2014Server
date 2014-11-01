@@ -4,7 +4,7 @@ var lastPoint;
 
 // Color variables
 var colors = ['black','red'];
-var colors_borders = ['border:1px solid rgba(0,0,0,0.4)','border:1px solid rgba(255,0,0,0.4);'];
+var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
 var color_selected = 0;
 
 /*

@@ -26,8 +26,7 @@ module.exports.init = function(httpServer){
 
 module.exports.emitter = function(data) {
 	if (myIO) {
-
-		if(draw: data.writing == 'True'){
+		if(data.writing == 'True'){
 			myIO.sockets.emit('updateDataPoints', {
 				x: data.xValue,
 				y: data.yValue,
