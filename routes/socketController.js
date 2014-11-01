@@ -29,19 +29,26 @@ module.exports.emitter = function(data) {
 
 		var write = isWritingEnabled(data);
 
-		if(write && data.writing == 'True'){
+		if(data.moveBoard == 'True'){
+			myIO.sockets.emit('moveBoard', {
+				x: data.moveBoardX,
+				y: data.moveBoardY
+			})
+		}else {
+			if(write && data.writing == 'True'){
 			myIO.sockets.emit('clearOverlay');
 			myIO.sockets.emit('updateDataPoints', {
 				x: data.xValue,
 				y: data.yValue,
 			});
 			myIO.sockets.emit('toggleWriting', true);
-		}else{
-			myIO.sockets.emit('showCursor', {
-				x: data.xValue,
-				y: data.yValue,
-			});
-			myIO.sockets.emit('toggleWriting', false);
+			}else{
+				myIO.sockets.emit('showCursor', {
+					x: data.xValue,
+					y: data.yValue,
+				});
+				myIO.sockets.emit('toggleWriting', false);
+			}
 		}
 	}
 }

@@ -47,7 +47,7 @@ function drawCircle(mouseX, mouseY){
 
 	// resize the canvas to fill browser window dynamically
 	window.addEventListener('resize', resizeCanvas, false);
-	window.addEventListener('resize', resizeOverlayCanvas, false);
+	// window.addEventListener('resize', resizeOverlayCanvas, false);
 	resizeCanvas();
 	resizeOverlayCanvas();
 
@@ -109,6 +109,11 @@ function drawCircle(mouseX, mouseY){
 		ctx.stroke();
 	});
 
+	/**
+	 *	When user is nto writing:
+	 *		- showCursor
+	 *		- clearOverlay (when done)
+	 */
 	socket.on('showCursor',function(data){
 		drawCircle(data.x, data.y);
 	});
@@ -118,6 +123,10 @@ function drawCircle(mouseX, mouseY){
 		overlayCtx.clearRect(0, 0, overlayc.width, overlayc.height);
 	})
 
+	/*
+	 *	This takes care of toggling the UI element to show if the user
+	 * 	has the handle on the pen or not.
+	 */
 	socket.on('toggleWriting', function(writing){
 		if (writing){
 			$("#writing_enable").css('display','block');
@@ -127,6 +136,21 @@ function drawCircle(mouseX, mouseY){
 			$("#writing_disable").css('display','block');
 		}
 	});
+
+	socket.on('moveBoard', function(data){
+		data.x;
+		data.y;
+
+
+		// shift everything to the left:
+		var imageData = ctx.getImageData(1, 0, data.x, data.y);
+		ctx.putImageData(imageData, 0, 0);
+		// now clear the right-most pixels:
+		ctx.clearRect(c.width-1, 0, 1, c.height);
+	});
+
+
+	
 
 
 })(jQuery);
