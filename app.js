@@ -13,9 +13,9 @@ var path = require('path');
 // mongoose
 var mongoose = require('mongoose');
 if (process.env.NODE_ENV === 'production') {
-    mongoose.connect('mongodb://cmg427:First Heroku App@kahana.mongohq.com:10034/app28150436');
+
 } else {
-    mongoose.connect('mongodb://localhost/codesemble');
+    mongoose.connect('mongodb://localhost/whiteboard');
 }
 mongoose.connection.on('error', function() {
   console.error('✗ MongoDB Connection Error. Please make sure MongoDB is running.');
