@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using System.Threading;
 
 using System.Net;
 using System.Collections.Specialized;
@@ -28,8 +29,14 @@ namespace KinectHandTracking
     {
 
         static Stopwatch timer = null;
+        static Stopwatch sendTimer = null;
         static string url = "http://172.26.5.118:3000/csharp/";
-        static bool calibrated = true;
+        static bool writing = false;
+        static double writingDepth;
+        static double currWritingX = 0;
+        static double currWritingY = 0;
+        static double currStopWritingX = 0;
+        static double currStopWritingY = 0;
 
         #region Members
 
@@ -126,34 +133,93 @@ namespace KinectHandTracking
                                 Joint thumbRight = body.Joints[JointType.ThumbRight];
                                 Joint tipRight = body.Joints[JointType.HandTipRight];
 
-                                Joint handLeft = body.Joints[JointType.HandLeft];
-                                Joint thumbLeft = body.Joints[JointType.ThumbLeft];
-                                Joint tipLeft = body.Joints[JointType.HandTipLeft];
 
-                                // Draw hands and thumbs
-                                //canvas.DrawHand(handRight);
-                                //canvas.DrawHand(handLeft);
-                                //canvas.DrawThumb(thumbRight);
-                                //canvas.DrawThumb(thumbLeft);
+                               
+                                //Joint handLeft = body.Joints[JointType.HandLeft];
+                                //Joint thumbLeft = body.Joints[JointType.ThumbLeft];
+                                //Joint tipLeft = body.Joints[JointType.HandTipLeft];
+
+                                if (!writing)
+                                {
+                                    canvas.DrawHand(handRight);
+                                  //  canvas.DrawHand(handLeft);
+                                  //  canvas.DrawThumb(thumbRight);
+                                  //  canvas.DrawThumb(thumbLeft);
+
+                                    if (body.HandRightState == HandState.Lasso)
+                                    {
+                                        timer = timer == null ? Stopwatch.StartNew() : timer;
+                                        currWritingX = tipRight.Position.X;
+                                        currWritingY = tipRight.Position.Y;
+                                        if (tipRight.Position.X < currWritingX - 0.2 || tipRight.Position.X > currWritingX + 0.2
+                                            || tipRight.Position.Y < currWritingY - 0.2 || tipRight.Position.Y > currWritingY + 0.2)
+                                        {
+                                            timer = null;
+                                            //timer = Stopwatch.StartNew();
+                                        }
+                                        else if (timer != null && timer.ElapsedMilliseconds >= 3000)
+                                        {
+                                            timer = null;
+                                            writingDepth = tipRight.Position.Z;
+                                            writing = true;
+                                        }
+                                    }
+
+                                }
+
+                                if (body.HandRightState == HandState.Open)
+                                {
+                                    timer = timer == null ? Stopwatch.StartNew() : timer;
+                                    currStopWritingX = tipRight.Position.X;
+                                    currStopWritingY = tipRight.Position.Y;
+                                    if (tipRight.Position.X < currStopWritingX - 0.2 || tipRight.Position.X > currStopWritingX + 0.2
+                                        || tipRight.Position.Y < currStopWritingY - 0.2 || tipRight.Position.Y > currStopWritingY + 0.2)
+                                    {
+                                        timer = null;
+                                        //timer = Stopwatch.StartNew();
+                                    }
+                                    else if (timer != null && timer.ElapsedMilliseconds >= 1500)
+                                    {
+                                        writing = false;
+                                        sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
+                                        timer = null;
+                                    }
+                                }
+
                                 canvas.DrawThumb(tipRight);
-                                canvas.DrawThumb(tipLeft);
+                               // canvas.DrawThumb(tipLeft);
 
-                                tblLeftPos.Text = "X: " + tipLeft.Position.X.ToString() + " \nY: " + tipLeft.Position.Y.ToString() + " \nZ: " + tipLeft.Position.Z.ToString();
+                               // tblLeftPos.Text = "X: " + tipLeft.Position.X.ToString() + " \nY: " + tipLeft.Position.Y.ToString() + " \nZ: " + tipLeft.Position.Z.ToString();
                                 tblRightPos.Text = "X: " + tipRight.Position.X.ToString() + " \nY: " + tipRight.Position.Y.ToString() + " \nZ: " + tipRight.Position.Z.ToString();
 
-                                using (var wb = new WebClient())
-                                {
-                                    var data = new NameValueCollection();
-                                    data["xValue"] = tipRight.Position.X.ToString();
-                                    data["yValue"] = tipRight.Position.Y.ToString();
+                                sendTimer = sendTimer == null ? Stopwatch.StartNew() : sendTimer;
 
-                                    var response = wb.UploadValues(url, "POST", data);
+                                if (writing && sendTimer.ElapsedMilliseconds >= 35) 
+                                { 
+                                    sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
+                                    sendTimer = null;
+                                    sendTimer = Stopwatch.StartNew();
                                 }
-                                System.Threading.Thread.Sleep(33);
                             }
                         }
                     }
                 }
+            }
+        }
+
+        void sendData(string positionX, string positionY, string positionZ)
+        {
+            using (var wb = new WebClient())
+            {
+                var data = new NameValueCollection();
+                data["writing"] = writing.ToString();
+                data["xValue"] = positionX;
+                data["yValue"] = positionY;
+                data["zValue"] = positionZ;
+                data["initZ"] = writingDepth.ToString(); ;
+
+                var response = wb.UploadValues(url, "POST", data);
+                System.Threading.Thread.Sleep(50);
             }
         }
 
