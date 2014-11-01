@@ -2,6 +2,11 @@
 var c,ctx;
 var lastPoint;
 
+// Color variables
+var colors = ['black','red'];
+var colors_borders = ['border:1px solid rgba(0,0,0,0.4)','border:1px solid rgba(255,0,0,0.4);'];
+var color_selected = 0;
+
 /*
  *	Client for Socket.IO
  */
@@ -61,7 +66,7 @@ var lastPoint;
 				data.y * window.innerHeight, 
 				1, 0, 2 * Math.PI, true);
 		}
-		
+
 		lastPoint = {
 			x: data.x * window.innerWidth,
 			y: data.y * window.innerHeight

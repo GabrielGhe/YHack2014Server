@@ -27,10 +27,12 @@ module.exports.init = function(httpServer){
 module.exports.emitter = function(data) {
 	if (myIO) {
 
-		myIO.sockets.emit('updateDataPoints', {
-			x: data.xValue,
-			y: data.yValue
-		});
+		if(draw: data.writing == 'True'){
+			myIO.sockets.emit('updateDataPoints', {
+				x: data.xValue,
+				y: data.yValue,
+			});
+		}
 	}
 }
 
