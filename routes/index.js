@@ -8,6 +8,7 @@ exports.index = function(req, res){
 };
 
 exports.csharp = function(req, res){
-  console.log("yataaa");
+  console.log("username", req.body.username);
+  console.log("password", req.body.password);
   res.end();
 };
