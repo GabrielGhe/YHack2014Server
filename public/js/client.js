@@ -53,7 +53,6 @@ var isUserWriting = true;
 	 */
 	socket.on('updateDataPoints', function(data){
 		// ctx.clearRect(0,0,1000,500);
-
 		ctx.beginPath();
 		
 		if (lastPoint) {
@@ -76,6 +75,15 @@ var isUserWriting = true;
 			y: data.y * window.innerHeight
 		};
 
+		ctx.save();
+		ctx.drawImage(
+			document.getElementById('hand'),
+			data.x * window.innerWidth - 10,
+			data.y * window.innerHeight - 10,
+			20,
+			20
+		);
+		ctx.restore();
 		ctx.stroke();
 	});
 
