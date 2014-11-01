@@ -50,7 +50,10 @@ function isWritingEnabled(data){
 	var initZ = parseFloat(data.initZ);
 	var realZ = parseFloat(data.zValue);
 
-	return (initZ-5 < realZ) && (realZ > initZ+5);
+	if(realZ > initZ+0.06)
+		return false;
+	else 
+		return true;
 }
 
 

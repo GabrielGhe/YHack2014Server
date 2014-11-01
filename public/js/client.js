@@ -119,7 +119,6 @@ function drawCircle(mouseX, mouseY){
 	})
 
 	socket.on('toggleWriting', function(writing){
-		console.log(writing);
 		if (writing){
 			$("#writing_enable").css('display','block');
 			$("#writing_disable").css('display','none');
