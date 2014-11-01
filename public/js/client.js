@@ -1,5 +1,6 @@
 
 var c,ctx;
+var lastPoint;
 
 /*
  *	Client for Socket.IO
@@ -13,15 +14,8 @@ var c,ctx;
 	ctx = c.getContext("2d");
 
 	// resize the canvas to fill browser window dynamically
-    window.addEventListener('resize', resizeCanvas, false);
-    
-    resizeCanvas();
-
-	ctx.translate(c.width/2, c.height/2);
- 	ctx.rotate(getRadianAngle(180));
-
- 	ctx.translate(1000, 0);
-	ctx.scale(-1, 1);
+  window.addEventListener('resize', resizeCanvas, false);
+  resizeCanvas();
 
 	// On form validation send emit the login event to the server
 	// It'll create a new user
@@ -54,20 +48,30 @@ var c,ctx;
 
 		ctx.beginPath();
 		
-		console.log("context height", c.height);
-		console.log("context width", c.width);
-		
-		// ctx.arc( 
-		// 	(data.x*100) + 500,
-		// 	(data.y*100) + 250, 
-		// 	1, 0, 2 * Math.PI, true);
+		if (lastPoint) {
+			ctx.moveTo(lastPoint.x, lastPoint.y);
+			
+			ctx.lineTo(
+				data.x * window.innerWidth, 
+				data.y * window.innerHeight
+			);
 
-		ctx.fillRect(
-			data.x*100,
-			data.y*100,
-			5,
-			5
-		);
+		} else {
+			// ctx.fillRect(
+			// 	data.x* window.innerWidth,
+			// 	data.y* window.innerHeight,
+			// 	5,
+			// 	5
+			// );
+			ctx.arc( 
+				data.x * window.innerWidth,
+				data.y * window.innerHeight, 
+				1, 0, 2 * Math.PI, true);
+		}
+		lastPoint = {
+			x: data.x * window.innerWidth,
+			y: data.y * window.innerHeight
+		};		
 
 		ctx.stroke();
 	});
@@ -83,4 +87,9 @@ function getRadianAngle(degreeValue) {
 function resizeCanvas() {
     c.width = window.innerWidth;
     c.height = window.innerHeight;
+    if (ctx) {
+    	ctx.translate(c.width/2, c.height/2);
+	 		ctx.rotate(getRadianAngle(180));
+			ctx.scale(-1, 1);
+    }
 }
