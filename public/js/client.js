@@ -21,7 +21,8 @@ var expansionVar = 1.2;
  (function($){
 
 	// Create connection to the socket
-	var socket = io.connect('http://172.26.5.118:3000');
+	//var socket = io.connect('http://172.26.5.118:3000');
+	var socket = io.connect('http://terabites.azurewebsites.net/');
 
 	c = document.getElementById("myCanvas");
 	ctx = c.getContext("2d");
