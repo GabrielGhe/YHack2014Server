@@ -14,8 +14,8 @@ var lastPoint;
 	ctx = c.getContext("2d");
 
 	// resize the canvas to fill browser window dynamically
-  window.addEventListener('resize', resizeCanvas, false);
-  resizeCanvas();
+	window.addEventListener('resize', resizeCanvas, false);
+	resizeCanvas();
 
 	// On form validation send emit the login event to the server
 	// It'll create a new user
@@ -49,25 +49,19 @@ var lastPoint;
 		ctx.beginPath();
 		
 		if (lastPoint) {
-			ctx.moveTo(lastPoint.x, lastPoint.y);
-			
+			ctx.moveTo(lastPoint.x, lastPoint.y);		
 			ctx.lineTo(
 				data.x * window.innerWidth, 
 				data.y * window.innerHeight
 			);
 
 		} else {
-			// ctx.fillRect(
-			// 	data.x* window.innerWidth,
-			// 	data.y* window.innerHeight,
-			// 	5,
-			// 	5
-			// );
 			ctx.arc( 
 				data.x * window.innerWidth,
 				data.y * window.innerHeight, 
 				1, 0, 2 * Math.PI, true);
 		}
+		
 		lastPoint = {
 			x: data.x * window.innerWidth,
 			y: data.y * window.innerHeight
