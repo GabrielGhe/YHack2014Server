@@ -2,12 +2,12 @@
 /*
  *	Socket controller
  */
-
+var myIO;
 
 module.exports.init = function(httpServer){
 	
 	var io = require('socket.io').listen(httpServer);
-
+	myIO = io;
 
 	// Test variables
 	var X = 0;
@@ -53,6 +53,12 @@ module.exports.init = function(httpServer){
 		 });
 
 	});
+};
+
+module.exports.emitter = function(data) {
+	if (myIO) {
+		myIO.sockets.emit('test', data.xValue);
+	}
 }
 
 
