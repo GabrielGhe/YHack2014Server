@@ -30,12 +30,17 @@ module.exports.emitter = function(data) {
 		var write = isWritingEnabled(data);
 
 		if(write && data.writing == 'True'){
+			myIO.sockets.emit('clearOverlay');
 			myIO.sockets.emit('updateDataPoints', {
 				x: data.xValue,
 				y: data.yValue,
 			});
 			myIO.sockets.emit('toggleWriting', true);
 		}else{
+			myIO.sockets.emit('showCursor', {
+				x: data.xValue,
+				y: data.yValue,
+			});
 			myIO.sockets.emit('toggleWriting', false);
 		}
 	}
@@ -45,7 +50,7 @@ function isWritingEnabled(data){
 	var initZ = parseFloat(data.initZ);
 	var realZ = parseFloat(data.zValue);
 
-	return (Math.abs(initZ-realZ) > 0.10)
+	return (initZ-5 < realZ) && (realZ > initZ+5);
 }
 
 

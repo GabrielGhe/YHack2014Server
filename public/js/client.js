@@ -1,5 +1,5 @@
 
-var c,ctx;
+var c,ctx,overlayCtx,overlayc;
 var lastPoint;
 var clearLastPoint;
 
@@ -10,6 +10,26 @@ var color_selected = 0;
 
 // Check if the user wants to write
 var isUserWriting = true;
+
+var radius = 5;
+
+function drawCircle(mouseX, mouseY){
+  // Clear the background
+  overlayc.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Establish the circle path
+  overlayc.beginPath();
+  overlayc.arc(mouseX, mouseY, radius, 0 , 2 * Math.PI, false);
+  
+  // Fill the circle
+  overlayc.fillStyle = '00F0FF';
+  overlayc.fill();
+  
+  // Outline (stroke) the circle
+  overlayc.lineWidth = 4;
+  overlayc.strokeStyle = 'black';
+  overlayc.stroke();
+}
 
 /*
  *	Client for Socket.IO
@@ -22,9 +42,15 @@ var isUserWriting = true;
 	c = document.getElementById("myCanvas");
 	ctx = c.getContext("2d");
 
+	overlayc = document.getElementById("canvasOverlay");
+	overlayCtx = overlayc.getContext("2d");
+
 	// resize the canvas to fill browser window dynamically
 	window.addEventListener('resize', resizeCanvas, false);
+	window.addEventListener('resize', resizeOverlayCanvas, false);
 	resizeCanvas();
+	resizeOverlayCanvas();
+
 
 	// On form validation send emit the login event to the server
 	// It'll create a new user
@@ -83,6 +109,15 @@ var isUserWriting = true;
 		ctx.stroke();
 	});
 
+	socket.on('showCursor',function(data){
+		drawCircle(data.x, data.y);
+	});
+
+	socket.on('clearOverlay', function(){
+		// Clear the background
+		overlayCtx.clearRect(0, 0, overlayc.width, overlayc.height);
+	})
+
 	socket.on('toggleWriting', function(writing){
 		console.log(writing);
 		if (writing){
@@ -112,3 +147,17 @@ function resizeCanvas() {
 			ctx.scale(-1, 1);
     }
 }
+
+function resizeOverlayCanvas(){
+	overlayc.width = window.innerWidth;
+    overlayc.height = window.innerHeight;
+    if (ctx) {
+    	overlayCtx.lineWidth = 2;
+    	overlayCtx.translate(overlayc.width/2, overlayc.height/2);
+ 		overlayCtx.rotate(getRadianAngle(180));
+		overlayCtx.scale(-1, 1);
+    }
+}
+
+
+

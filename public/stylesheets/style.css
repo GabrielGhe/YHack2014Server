@@ -6,9 +6,13 @@ html, body {
 }
 
 canvas { 
+	position: absolute;
 	display:block; 
 	-webkit-box-shadow: inset 0 0 100px rgba(0,0,255,.4);
+}
 
+#canvasOverlay {
+	background: rgba(0,0,0,0);
 }
 
 .global_container {
