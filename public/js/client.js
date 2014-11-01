@@ -7,6 +7,9 @@ var colors = ['black','red'];
 var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
 var color_selected = 0;
 
+// Check if the user wants to write
+var isUserWriting = true;
+
 /*
  *	Client for Socket.IO
  */
@@ -73,6 +76,17 @@ var color_selected = 0;
 		};		
 
 		ctx.stroke();
+	});
+
+	socket.on('toggleWriting', function(writing){
+		console.log(writing);
+		if(writing){
+			$("#writing_enable").css('display','block');
+			$("#writing_disable").css('display','none');
+		} else {
+			$("#writing_enable").css('display','none');
+			$("#writing_disable").css('display','block');
+		}
 	});
 
 

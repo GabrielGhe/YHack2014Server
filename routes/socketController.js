@@ -31,6 +31,9 @@ module.exports.emitter = function(data) {
 				x: data.xValue,
 				y: data.yValue,
 			});
+			myIO.sockets.emit('toggleWriting', 'true');
+		}else{
+			myIO.sockets.emit('toggleWriting', 'false');
 		}
 	}
 }

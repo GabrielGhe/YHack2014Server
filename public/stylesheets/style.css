@@ -90,6 +90,8 @@ input[type="text"]:focus {
 }
 
 .element {
+	float: left;
+	position: relative;
 	margin-right: 20px;
 }
 
@@ -105,4 +107,12 @@ input[type="text"]:focus {
 	padding:5px;
 	font-weight: bold;
 	color: #ff0000;
+}
+
+#writing_enable {
+	display: block;
+}
+
+#writing_disable {
+	display: none;
 }
