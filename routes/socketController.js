@@ -10,6 +10,9 @@ module.exports.init = function(httpServer){
 	
 	var io = require('socket.io').listen(httpServer);
 	myIO = io;
+	User.remove({}, function(err){
+		console.log("cleared mongo");
+	});
 
 	/*
 	 *	Open socket
@@ -45,6 +48,10 @@ module.exports.emitter = function(data) {
 	if (myIO) {
 
 		var write = isWritingEnabled(data);
+
+		if(data.clap == 'True'){
+			myIO.sockets.emit('changeColor');
+		}
 
 		if(data.erase == 'True'){
 			myIO.sockets.emit('erase');
