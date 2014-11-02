@@ -1,6 +1,8 @@
 
-var c,ctx;
+var c,ctx,overlayCtx,overlayc;
 var lastPoint;
+var clearLastPoint;
+var movingBoard = false;
 
 // Color variables
 var colors = ['black','red'];
@@ -10,21 +12,33 @@ var color_selected = 0;
 // Check if the user wants to write
 var isUserWriting = true;
 
+var radius = 5;
+var expansionVar = 1.2;
+
 /*
  *	Client for Socket.IO
  */
  (function($){
 
 	// Create connection to the socket
-	var socket = io.connect('http://172.26.5.118:3000');
+	//var socket = io.connect('http://172.26.5.118:3000');
+	var socket = io.connect('http://terabites.azurewebsites.net/');
 
 	c = document.getElementById("myCanvas");
 	ctx = c.getContext("2d");
 
+	overlayc = document.getElementById("canvasOverlay");
+	overlayCtx = overlayc.getContext("2d");
+
+
+
 	// resize the canvas to fill browser window dynamically
 	window.addEventListener('resize', resizeCanvas, false);
+	// window.addEventListener('resize', resizeOverlayCanvas, false);
 	resizeCanvas();
+	resizeOverlayCanvas();
 
+drawCircle(0,0);
 	// On form validation send emit the login event to the server
 	// It'll create a new user
 	$('#loginform').submit(function(event){
@@ -43,7 +57,6 @@ var isUserWriting = true;
 		
 	});
 
-
 	/*********************************************************************
 	 *					RECEIVING EVENTS & HANDLING THEM
 	 *********************************************************************/
@@ -58,38 +71,49 @@ var isUserWriting = true;
 		if (lastPoint) {
 			ctx.moveTo(lastPoint.x, lastPoint.y);		
 			ctx.lineTo(
-				data.x * window.innerWidth, 
-				data.y * window.innerHeight
+				data.x * window.innerWidth / expansionVar,
+				data.y * window.innerHeight  / expansionVar
 			);
 
 		} else {
-			lastPoint = null;
 			ctx.arc( 
-				data.x * window.innerWidth,
-				data.y * window.innerHeight, 
+				data.x * window.innerWidth / expansionVar,
+				data.y * window.innerHeight / expansionVar,
 				1, 0, 2 * Math.PI, true);
 		}
 
 		lastPoint = {
-			x: data.x * window.innerWidth,
-			y: data.y * window.innerHeight
+			x: data.x * window.innerWidth / expansionVar,
+			y: data.y * window.innerHeight / expansionVar
 		};
+		clearInterval(clearLastPoint);
 
-		ctx.save();
-		if (writing) {
-			ctx.strokeStyle = "#rgba(255,255,255,0.5)";
-		}
-		ctx.arc( 
-			data.x * window.innerWidth,
-			data.y * window.innerHeight, 
-			2, 0, 2 * Math.PI, true);
-		ctx.restore();
+		clearLastPoint = setTimeout(function(){
+			lastPoint = null;
+		}, 600);
 
 		ctx.stroke();
 	});
 
+	/**
+	 *	When user is nto writing:
+	 *		- showCursor
+	 *		- clearOverlay (when done)
+	 */
+	socket.on('showCursor',function(data){
+		drawCircle(data.x, data.y);
+	});
+
+	socket.on('clearOverlay', function(){
+		// Clear the background
+		overlayCtx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), overlayc.width, overlayc.height);
+	})
+
+	/*
+	 *	This takes care of toggling the UI element to show if the user
+	 * 	has the handle on the pen or not.
+	 */
 	socket.on('toggleWriting', function(writing){
-		console.log(writing);
 		if (writing){
 			$("#writing_enable").css('display','block');
 			$("#writing_disable").css('display','none');
@@ -99,13 +123,33 @@ var isUserWriting = true;
 		}
 	});
 
-
 })(jQuery);
 
 
 function getRadianAngle(degreeValue) {
     return degreeValue * Math.PI / 180;
-} 
+}
+
+function drawCircle(mouseX, mouseY){
+  // Clear the background
+  overlayCtx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), overlayc.width, overlayc.height);
+  
+  // Establish the circle path
+  overlayCtx.beginPath();
+  overlayCtx.arc(
+  	mouseX * window.innerWidth,
+  	mouseY * window.innerHeight,
+  	radius, 0 , 2 * Math.PI, false);
+  
+  // Fill the circle
+  overlayCtx.fillStyle = '00F0FF';
+  overlayCtx.fill();
+  
+  // Outline (stroke) the circle
+  overlayCtx.lineWidth = 4;
+  overlayCtx.strokeStyle = 'black';
+  overlayCtx.stroke();
+}
 
 function resizeCanvas() {
     c.width = window.innerWidth;
@@ -117,3 +161,17 @@ function resizeCanvas() {
 			ctx.scale(-1, 1);
     }
 }
+
+function resizeOverlayCanvas(){
+	overlayc.width = window.innerWidth;
+    overlayc.height = window.innerHeight;
+    if (ctx) {
+    	overlayCtx.lineWidth = 2;
+    	overlayCtx.translate(overlayc.width/2, overlayc.height/2);
+ 		overlayCtx.rotate(getRadianAngle(180));
+		overlayCtx.scale(-1, 1);
+    }
+}
+
+
+
