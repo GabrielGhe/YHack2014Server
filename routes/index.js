@@ -10,7 +10,10 @@ exports.index = function(req, res){
 };
 
 exports.csharp = function(req, res) {
-  console.log("xvalue", req.body.xValue);
   io(req.body);
   res.end();
+};
+
+exports.users = function(req, res) {
+  //TODO: get users
 };
