@@ -26,7 +26,7 @@ var expansionVar = 1.2;
 	$('#loginform').submit(function(event){
 		event.preventDefault();
 		// Create connection to the socket
-		var socket = io.connect('http://localhost:3000');
+		var socket = io.connect('http://172.26.9.46:3000');
 		//var socket = io.connect('http://terabites.azurewebsites.net/');
 
 		c = document.getElementById("myCanvas");
@@ -65,7 +65,7 @@ var expansionVar = 1.2;
 
 		$.get('/users', function(users) {
 			for(var i=0; i < users.length; ++i) {
-				$('.marquee .js-marquee').append('<span class="user-block" data-id="' + users[i].id + '"><i class="fa fa-circle"></i>' + users[i].name + '</span>');
+				$('.marquee .js-marquee').append('<span class="user-block" data-id="' + users[i].id + '"><i class="fa fa-circle online_user"></i>' + users[i].name + '</span>');
 			}
 		});
 
@@ -74,7 +74,7 @@ var expansionVar = 1.2;
 		});
 
 		socket.on('joined', function(user){
-			$('.marquee .js-marquee').append('<span class="user-block" data-id="' + user.id + '"><i class="fa fa-circle"></i>' + user.name + '</span>');
+			$('.marquee .js-marquee').append('<span class="user-block" data-id="' + user.id + '"><i class="fa fa-circle online_user"></i>' + user.name + '</span>');
 		});
 
 		socket.on('disconnected', function(id){
@@ -82,7 +82,7 @@ var expansionVar = 1.2;
 		});
 
 		/*
-		 *	Manage the user successful connection
+		 *	Manage the board operations
 		 */
 		socket.on('updateDataPoints', function(data){
 			// ctx.clearRect(0,0,1000,500);
@@ -113,6 +113,10 @@ var expansionVar = 1.2;
 			}, 600);
 
 			ctx.stroke();
+		});
+
+		socket.on('erase',function(data){
+			ctx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), c.width, c.height);
 		});
 
 		/**

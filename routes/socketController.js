@@ -46,12 +46,10 @@ module.exports.emitter = function(data) {
 
 		var write = isWritingEnabled(data);
 
-		if(data.moveBoard == 'True'){
-			myIO.sockets.emit('moveBoard', {
-				x: data.xValue,
-				y: data.yValue
-			})
-		}else {
+		if(data.erase == 'True'){
+			myIO.sockets.emit('erase');
+		} else {
+			
 			if(write && data.writing == 'True'){
 			myIO.sockets.emit('clearOverlay');
 			myIO.sockets.emit('updateDataPoints', {
@@ -66,6 +64,7 @@ module.exports.emitter = function(data) {
 				});
 				myIO.sockets.emit('toggleWriting', false);
 			}
+
 		}
 	}
 }

@@ -159,7 +159,7 @@ namespace KinectHandTracking
                                 {
                                     eraseTimer = eraseTimer == null ? Stopwatch.StartNew() : eraseTimer;
 
-                                    if (eraseTimer != null && eraseTimer.ElapsedMilliseconds >= 2000)
+                                    if (eraseTimer != null && eraseTimer.ElapsedMilliseconds >= 1000)
                                     {
                                         eraseTimer = null;
                                         erase = true;
@@ -180,8 +180,9 @@ namespace KinectHandTracking
                                             timer = timer == null ? Stopwatch.StartNew() : timer;
                                             currWritingX = currWritingX == 0 ? tipRight.Position.X : currWritingX;
                                             currWritingY = currWritingY == 0 ? tipRight.Position.Y : currWritingY;
-                                            if (tipRight.Position.X < currWritingX - 0.2 || tipRight.Position.X > currWritingX + 0.2
-                                                || tipRight.Position.Y < currWritingY - 0.2 || tipRight.Position.Y > currWritingY + 0.2)
+                                            if ((tipRight.TrackingState == TrackingState.Tracked) 
+                                                && (tipRight.Position.X < currWritingX - 0.2 || tipRight.Position.X > currWritingX + 0.2
+                                                || tipRight.Position.Y < currWritingY - 0.2 || tipRight.Position.Y > currWritingY + 0.2))
                                             {
                                                 timer = null;
                                                 //timer = Stopwatch.StartNew();
@@ -203,8 +204,9 @@ namespace KinectHandTracking
                                         timer = timer == null ? Stopwatch.StartNew() : timer;
                                         currStopWritingX = currStopWritingX == 0 ? handRight.Position.X : currStopWritingX;
                                         currStopWritingY = currStopWritingY == 0 ? handRight.Position.Y : currStopWritingY;
-                                        if (handRight.Position.X < currStopWritingX - 0.2 || handRight.Position.X > currStopWritingX + 0.2
-                                            || handRight.Position.Y < currStopWritingY - 0.2 || handRight.Position.Y > currStopWritingY + 0.2)
+                                        if ((handRight.TrackingState == TrackingState.Tracked) 
+                                                && (handRight.Position.X < currStopWritingX - 0.2 || handRight.Position.X > currStopWritingX + 0.2
+                                            || handRight.Position.Y < currStopWritingY - 0.2 || handRight.Position.Y > currStopWritingY + 0.2))
                                         {
                                             timer = null;
                                             //timer = Stopwatch.StartNew();
