@@ -29,23 +29,38 @@ module.exports.emitter = function(data) {
 
 		var write = isWritingEnabled(data);
 
-		if(write && data.writing == 'True'){
+		if(data.moveBoard == 'True'){
+			myIO.sockets.emit('moveBoard', {
+				x: data.xValue,
+				y: data.yValue
+			})
+		}else {
+			if(write && data.writing == 'True'){
+			myIO.sockets.emit('clearOverlay');
 			myIO.sockets.emit('updateDataPoints', {
 				x: data.xValue,
 				y: data.yValue,
 			});
 			myIO.sockets.emit('toggleWriting', true);
-		}else{
-			myIO.sockets.emit('toggleWriting', false);
+			}else{
+				myIO.sockets.emit('showCursor', {
+					x: data.xValue,
+					y: data.yValue,
+				});
+				myIO.sockets.emit('toggleWriting', false);
+			}
 		}
 	}
 }
 
-function isWritingEnable(data){
-	var initZ = data.initZ;
-	var realZ = data.zValue;
+function isWritingEnabled(data){
+	var initZ = parseFloat(data.initZ);
+	var realZ = parseFloat(data.zValue);
 
-	return (abs(initZ-realZ) < 10)
+	if(realZ > initZ+0.06)
+		return false;
+	else 
+		return true;
 }
 
 

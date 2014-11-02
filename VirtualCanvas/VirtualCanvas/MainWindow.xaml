@@ -4,17 +4,29 @@
         Title="Kinect 2 hand tracking" Height="800" Width="1200" Loaded="Window_Loaded" Closed="Window_Closed">
     <Grid>
         <Image Name="camera" />
-        <Canvas Name="canvas" />
+        <Canvas Name="canvas" Margin="0,-10,0,10" />
         <Grid Style="{StaticResource ContainerStyle}">
             <StackPanel Margin="20">
-                <StackPanel Margin="0,50,0,0">
-                    <TextBlock Text="Left hand tip Pos:" Style="{StaticResource TitleStyle}" />
-                    <TextBlock Name="tblLeftPos" Text="-" Style="{StaticResource StateStyle}" />
-                </StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Margin"
+                    Value="10" />
+                        <Setter Property="Width"
+                    Value="Auto" />
+                        <Setter Property="Height"
+                    Value="120" />
+                        <Setter Property="FontSize"
+                    Value="18" />
+                        <Setter Property="Padding"
+                    Value="20" />
+                    </Style>
+                </StackPanel.Resources>
                 <StackPanel Margin="0,50,0,0">
                     <TextBlock Text="Right hand tip Pos:" Style="{StaticResource TitleStyle}" />
                     <TextBlock Name="tblRightPos" Text="-" Style="{StaticResource StateStyle}" />
                 </StackPanel>
+                <Button Content="Choose Red" Click="OnChooseRed" />
+                <Button Content="Choose Black" Click="OnChooseBlack" />
             </StackPanel>
         </Grid>
     </Grid>

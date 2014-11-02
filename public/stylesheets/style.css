@@ -6,9 +6,13 @@ html, body {
 }
 
 canvas { 
+	position: absolute;
 	display:block; 
 	-webkit-box-shadow: inset 0 0 100px rgba(0,0,255,.4);
+}
 
+#canvasOverlay {
+	background: rgba(0,0,0,0);
 }
 
 .global_container {
@@ -111,7 +115,7 @@ input[type="text"]:focus {
 
 #writing_enable {
 	float:right;
-	display: block;
+	display: none;
 	padding:5px;
 	font-weight: bold;
 	color:rgba(0,255,0,0.7);
@@ -121,7 +125,7 @@ input[type="text"]:focus {
 
 #writing_disable {
 	float:right;
-	display: none;
+	display: block;
 	padding:5px;
 	font-weight: bold;
 	color:rgba(255,0,0,0.7);
