@@ -1,8 +1,9 @@
-
+'use strict';
 
 /*
  *	Socket controller
  */
+var User = require('./../models/user');
 var myIO;
 
 module.exports.init = function(httpServer){
@@ -19,14 +20,22 @@ module.exports.init = function(httpServer){
 		socket.on('join', function(name) {
 			socket.name = name;
 			console.log('user ' + socket.name + ' has joined with id: ' + socket.id);
-			//TODO: save user
+			var user = new User({
+				id: socket.id,
+				name:socket.name
+			});
+			user.save();
 			socket.broadcast.emit('joined', { name:socket.name, id:socket.id});
 		});
 
 		socket.on('disconnect', function(){
 			console.log('user ' + socket.name + ' has left');
-			//TODO: remove socket.name
-			socket.broadcast.emit('disconnected', { name:socket.name, id:socket.id});
+			User.find({ id: socket.id }, function(err, users) {
+				for(var i=0; i < users.length; ++i) {
+					users[i].remove();
+				}
+			});
+			socket.broadcast.emit('disconnected', socket.id);
 		});
 
 	});

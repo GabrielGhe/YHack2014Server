@@ -56,24 +56,29 @@ var expansionVar = 1.2;
 		$('#user_info').fadeIn(2000);
 		$('.user_params').fadeIn(2000);
 		$('.marquee').marquee({
-			duration: 10000,
+			duration: 30000,
 		});
-
 
 		/*********************************************************************
 		 *					RECEIVING EVENTS & HANDLING THEM
 		 *********************************************************************/
 
+		$.get('/users', function(users) {
+			for(var i=0; i < users.length; ++i) {
+				$('.marquee .js-marquee').append('<span class="user-block" data-id="' + users[i].id + '">' + users[i].name + '</span>');
+			}
+		});
+
 		socket.on('connect', function(){
 			socket.emit('join', name);
 		});
 
-		socket.on('joined', function(name){
-			//TODO: New person has joined
+		socket.on('joined', function(user){
+			$('.marquee .js-marquee').append('<span class="user-block" data-id="' + user.id + '">' + user.name + '</span>');
 		});
 
-		socket.on('disconnected', function(){
-			//TODO: Other user has disconnected
+		socket.on('disconnected', function(id){
+			$('*[data-id="' + id + '"]').remove();
 		});
 
 		/*
