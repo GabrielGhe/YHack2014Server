@@ -132,3 +132,14 @@ input[type="text"]:focus {
 	font-size: 30px;
 	margin-top: -5px;
 }
+
+.marquee {
+	position:fixed;
+	width:100%;
+	left:0;
+	bottom:0;
+}
+
+.marquee span {
+	padding-left:100px;
+}
