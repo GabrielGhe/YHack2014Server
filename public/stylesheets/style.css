@@ -149,5 +149,5 @@ input[type="text"]:focus {
 }
 
 .marquee span {
-	padding-left:100px;
+	padding-right:100px;
 }
