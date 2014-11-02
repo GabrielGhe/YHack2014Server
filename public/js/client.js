@@ -17,6 +17,7 @@ var wasAlreadyErase = false;
 
 // Color variables
 var colors = ['color_black','color_red'];
+var color_value = ['#000000','#ff0000'];
 var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
 var color_selected = 0;
 
@@ -30,7 +31,7 @@ var color_selected = 0;
 	$('#loginform').submit(function(event){
 		event.preventDefault();
 		// Create connection to the socket
-		var socket = io.connect('http://172.26.9.46:3000');
+		var socket = io.connect('http://localhost:3000');
 		//var socket = io.connect('http://terabites.azurewebsites.net/');
 
 		c = document.getElementById("myCanvas");
@@ -152,11 +153,11 @@ var color_selected = 0;
 			var border  = colors_borders[color_selected%2];
 
 			// Clear all previous borders
-			$('.color').forEach(function(color){
-				color.css('border','none');
-			});
+			$('.color').css('border','none');
 			// Assign new border
 			$('#'+element).css('border',border);
+
+      ctx.strokeStyle = color_value[color_selected%2];
 		});
 
 		/*

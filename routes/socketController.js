@@ -10,6 +10,9 @@ module.exports.init = function(httpServer){
 	
 	var io = require('socket.io').listen(httpServer);
 	myIO = io;
+	User.remove({}, function(err){
+		console.log("cleared mongo");
+	});
 
 	/*
 	 *	Open socket
