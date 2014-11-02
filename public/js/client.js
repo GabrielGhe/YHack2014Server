@@ -122,7 +122,7 @@ var color_selected = 0;
 
 		socket.on('erase',function(data){
 			$('#user_notfication').html('<i class="fa fa-file-o"></i>');
-			$('#user_notfication').attr('class','notification green');
+			$('#user_notfication').attr('class','notification _green');
 
 			if(!wasAlreadyErase){
 				$('#user_notfication').fadeIn(500)
@@ -171,7 +171,7 @@ var color_selected = 0;
 				$("#writing_disable").css('display','none');
 
 				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
-				$('#user_notfication').attr('class','notification green');
+				$('#user_notfication').attr('class','notification _green');
 				if(wasNotWriting){
 					$('#user_notfication').fadeIn(500)
 										  .delay(500)
@@ -183,7 +183,7 @@ var color_selected = 0;
 				$("#writing_disable").css('display','block');
 
 				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
-				$('#user_notfication').attr('class','notification red');
+				$('#user_notfication').attr('class','notification _red');
 
 				if(!wasNotWriting){
 					$('#user_notfication').fadeIn(500)
