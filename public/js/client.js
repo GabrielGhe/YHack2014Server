@@ -65,7 +65,7 @@ var expansionVar = 1.2;
 
 		$.get('/users', function(users) {
 			for(var i=0; i < users.length; ++i) {
-				$('.marquee .js-marquee').append('<span class="user-block" data-id="' + users[i].id + '"><i class="fa fa-circle"></i>' + users[i].name + '</span>');
+				$('.marquee .js-marquee').append('<span class="user-block" data-id="' + users[i].id + '"><i class="fa fa-circle online_user"></i>' + users[i].name + '</span>');
 			}
 		});
 
@@ -74,7 +74,7 @@ var expansionVar = 1.2;
 		});
 
 		socket.on('joined', function(user){
-			$('.marquee .js-marquee').append('<span class="user-block" data-id="' + user.id + '"><i class="fa fa-circle"></i>' + user.name + '</span>');
+			$('.marquee .js-marquee').append('<span class="user-block" data-id="' + user.id + '"><i class="fa fa-circle online_user"></i>' + user.name + '</span>');
 		});
 
 		socket.on('disconnected', function(id){
