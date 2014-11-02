@@ -32,13 +32,16 @@ namespace KinectHandTracking
         static Stopwatch timer = null;
         static Stopwatch sendTimer = null;
         static Stopwatch eraseTimer = null;
-        static Stopwatch clapTimer = null;
+        //static Stopwatch clapBufferTimer = null;
+        static Stopwatch leftTimer = null;
         static string url = "http://172.26.5.118:3000/csharp/";
         //static string url = "http://terabites.azurewebsites.net/csharp/";
         static bool writing = false;
         static bool erase = false;
         static bool clap = false;
         static double writingDepth;
+        static double currLeftX = 0;
+        static double currLeftY = 0;
         static double currWritingX = 0;
         static double currWritingY = 0;
         static double currStopWritingX = 0;
@@ -145,22 +148,28 @@ namespace KinectHandTracking
                                 Joint elbowRight = body.Joints[JointType.ElbowRight];
                                 Joint elbowLeft = body.Joints[JointType.ElbowLeft];
 
-                                if (Math.Abs(handRight.Position.X - handLeft.Position.X) < 0.02
-                                    && Math.Abs(handRight.Position.Y - handLeft.Position.Y) < 0.02)
+                                /*if (Math.Abs(handRight.Position.X - handLeft.Position.X) < 0.02
+                                    && Math.Abs(handRight.Position.Y - handLeft.Position.Y) < 0.02
+                                    && Math.Abs(handRight.Position.Z - handLeft.Position.Z) < 0.05)
                                 {
-                                    clapTimer = clapTimer == null ? Stopwatch.StartNew() : eraseTimer;
-                                    if (clapTimer != null && clapTimer.ElapsedMilliseconds >= 250)
+                                    if (clapBufferTimer == null)
                                     {
-                                        clapTimer = null;
+                                        clapBufferTimer = Stopwatch.StartNew();
                                         clap = true;
                                         writing = false;
                                         sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                         clap = false;
                                     }
-                                } 
-                                else if ((handRight.Position.X < handLeft.Position.X)
+                                    else
+                                    {
+                                        if (clapBufferTimer.ElapsedMilliseconds >= 2000) clapBufferTimer = null;
+                                    }
+                                } */
+                                
+                                if ((handRight.Position.X < handLeft.Position.X)
                                     && (elbowLeft.Position.X < elbowRight.Position.X)
-                                    && (elbowLeft.Position.Y < handRight.Position.Y))
+                                    && (elbowLeft.Position.Y < handRight.Position.Y)
+                                    && (elbowRight.Position.Y < handLeft.Position.Y))
                                 {
                                     canvas.DrawPoint(elbowRight);
                                     canvas.DrawPoint(elbowLeft);
@@ -173,6 +182,30 @@ namespace KinectHandTracking
                                         writing = false;
                                         sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                         erase = false;
+                                    }
+                                }
+                                else if (handLeft.Position.Y > elbowLeft.Position.Y
+                                        && Math.Abs(handLeft.Position.X - elbowLeft.Position.X) < 0.2
+                                        && (body.HandLeftState == HandState.Open))
+                                {
+                                    canvas.DrawPoint(handLeft);
+                                    leftTimer = leftTimer == null ? Stopwatch.StartNew() : leftTimer;
+                                    currLeftX = currLeftX == 0 ? handLeft.Position.X : currLeftX;
+                                    currLeftY = currLeftY == 0 ? handLeft.Position.Y : currLeftY;
+                                    if ((tipRight.TrackingState == TrackingState.Tracked) 
+                                        && (handLeft.Position.X < currLeftX - 0.2 || handLeft.Position.X > currLeftX + 0.2
+                                        || handLeft.Position.Y < currLeftY - 0.2 || handLeft.Position.Y > currLeftY + 0.2))
+                                    {
+                                        leftTimer = null;
+                                        
+                                    }
+                                    if(leftTimer != null && leftTimer.ElapsedMilliseconds >= 1000) 
+                                    {
+                                        leftTimer = null;
+                                        clap = true;
+                                        writing = false;
+                                        sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
+                                        clap = false;
                                     }
                                 } 
                                 else
