@@ -27,6 +27,10 @@
                 </StackPanel>
                 <Button Content="Choose Red" Click="OnChooseRed" />
                 <Button Content="Choose Black" Click="OnChooseBlack" />
+                <StackPanel Margin="0,50,0,0">
+                    <TextBlock Text="Current Color:" Style="{StaticResource TitleStyle}" />
+                    <TextBlock Name="currentColor" Text="-" Style="{StaticResource StateStyle}" />
+                </StackPanel>
             </StackPanel>
         </Grid>
     </Grid>
