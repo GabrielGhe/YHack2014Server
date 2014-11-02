@@ -5,16 +5,15 @@ var clearLastPoint;
 var movingBoard = false;
 var name;
 
-// Color variables
-var colors = ['black','red'];
-var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
-var color_selected = 0;
-
 // Check if the user wants to write
 var isUserWriting = true;
 
 var radius = 5;
 var expansionVar = 1.2;
+
+var wasNotWriting = true; 
+
+var wasAlreadyErase = false;
 
 /*
  *	Client for Socket.IO
@@ -116,6 +115,15 @@ var expansionVar = 1.2;
 		});
 
 		socket.on('erase',function(data){
+			$('#user_notfication').html('<i class="fa fa-file-o"></i>');
+			$('#user_notfication').attr('class','notification green');
+
+			if(!wasAlreadyErase){
+				$('#user_notfication').fadeIn(500)
+									  .delay(500)
+									  .fadeOut(500);
+				wasAlreadyErase = true;
+			} 
 			ctx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), c.width, c.height);
 		});
 
@@ -138,12 +146,32 @@ var expansionVar = 1.2;
 		 * 	has the handle on the pen or not.
 		 */
 		socket.on('toggleWriting', function(writing){
+			wasAlreadyErase = false;
 			if (writing){
 				$("#writing_enable").css('display','block');
 				$("#writing_disable").css('display','none');
+
+				$('#user_notfication').html('<i class="fa fa-check-square"></i>');
+				$('#user_notfication').attr('class','notification green');
+				if(wasNotWriting){
+					$('#user_notfication').fadeIn(500)
+										  .delay(500)
+										  .fadeOut(500);
+					wasNotWriting = false;
+				}
 			} else {
 				$("#writing_enable").css('display','none');
 				$("#writing_disable").css('display','block');
+
+				$('#user_notfication').html('<i class="fa fa-check-square"></i>');
+				$('#user_notfication').attr('class','notification red');
+
+				if(!wasNotWriting){
+					$('#user_notfication').fadeIn(500)
+										  .delay(500)
+										  .fadeOut(500);
+					wasNotWriting = true;
+				}
 			}
 		});
 	});
