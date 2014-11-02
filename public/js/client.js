@@ -15,6 +15,11 @@ var wasNotWriting = true;
 
 var wasAlreadyErase = false;
 
+// Color variables
+var colors = ['color_black','color_red'];
+var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
+var color_selected = 0;
+
 /*
  *	Client for Socket.IO
  */
@@ -140,6 +145,19 @@ var wasAlreadyErase = false;
 			// Clear the background
 			overlayCtx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), overlayc.width, overlayc.height);
 		})
+
+		socket.on('changeColor', function(){
+			color_selected++;
+			var element = colors[color_selected%2];
+			var border  = colors_borders[color_selected%2];
+
+			// Clear all previous borders
+			$('.color').forEach(function(color){
+				color.css('border','none');
+			});
+			// Assign new border
+			$('#'+element).css('border',border);
+		});
 
 		/*
 		 *	This takes care of toggling the UI element to show if the user

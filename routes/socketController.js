@@ -46,6 +46,10 @@ module.exports.emitter = function(data) {
 
 		var write = isWritingEnabled(data);
 
+		if(data.clap == 'True'){
+			myIO.sockets.emit('changeColor');
+		}
+
 		if(data.erase == 'True'){
 			myIO.sockets.emit('erase');
 		} else {
