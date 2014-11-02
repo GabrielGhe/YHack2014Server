@@ -82,7 +82,7 @@ var expansionVar = 1.2;
 		});
 
 		/*
-		 *	Manage the user successful connection
+		 *	Manage the board operations
 		 */
 		socket.on('updateDataPoints', function(data){
 			// ctx.clearRect(0,0,1000,500);
@@ -113,6 +113,10 @@ var expansionVar = 1.2;
 			}, 600);
 
 			ctx.stroke();
+		});
+
+		socket.on('erase',function(data){
+			ctx.clearRect( -(window.innerWidth/2), -(window.innerHeight/2), c.width, c.height);
 		});
 
 		/**
