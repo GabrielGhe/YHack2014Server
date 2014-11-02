@@ -77,7 +77,7 @@ namespace KinectHandTracking
             {
                 _sensor.Open();
 
-                _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared | FrameSourceTypes.Body);
+                _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared | FrameSourceTypes.Body );
                 _reader.MultiSourceFrameArrived += Reader_MultiSourceFrameArrived;
 
                 OpenGestureReader();
@@ -158,12 +158,12 @@ namespace KinectHandTracking
 
         void OnChooseRed(object sender, RoutedEventArgs e)
         {
-
+            currentColor.Text = "Red";
         }
 
         void OnChooseBlack(object sender, RoutedEventArgs e)
         {
-
+            currentColor.Text = "Black";
         }
 
         void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
@@ -187,6 +187,21 @@ namespace KinectHandTracking
                     canvas.Children.Clear();
 
                     _bodies = new Body[frame.BodyFrameSource.BodyCount];
+
+                    var trackedBody = this._bodies.Where(b => b.IsTracked).FirstOrDefault();
+
+                    if (trackedBody != null)
+                    {
+                        if (this.gestureReader.IsPaused)
+                        {
+                            this.gestureSource.TrackingId = trackedBody.TrackingId;
+                            this.gestureReader.IsPaused = false;
+                        }
+                    }
+                    else
+                    {
+                        this.OnTrackingIdLost(null, null);
+                    }
 
                     frame.GetAndRefreshBodyData(_bodies);
 
