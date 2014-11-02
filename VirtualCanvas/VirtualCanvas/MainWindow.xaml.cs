@@ -1,6 +1,4 @@
 ﻿using Microsoft.Kinect;
-//using Microsoft.Kinect.VisualGestureBuilder;
-using Microsoft.Kinect.Wpf.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,8 +31,11 @@ namespace KinectHandTracking
         #region Cond vars
         static Stopwatch timer = null;
         static Stopwatch sendTimer = null;
-        static string url = "http://172.26.5.118:3000/csharp/";
+        static Stopwatch eraseTimer = null;
+        static string url = "http://localhost:3000/csharp/";
+        //static string url = "http://terabites.azurewebsites.net/csharp/";
         static bool writing = false;
+        static bool erase = false;
         static double writingDepth;
         static double currWritingX = 0;
         static double currWritingY = 0;
@@ -48,10 +49,6 @@ namespace KinectHandTracking
         KinectSensor _sensor;
         MultiSourceFrameReader _reader;
         IList<Body> _bodies;
-
-        //Gesture swipeForwardGesture;
-        //VisualGestureBuilderFrameSource gestureSource;
-        //VisualGestureBuilderFrameReader gestureReader;
 
         #endregion
 
@@ -80,22 +77,8 @@ namespace KinectHandTracking
                 _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared | FrameSourceTypes.Body );
                 _reader.MultiSourceFrameArrived += Reader_MultiSourceFrameArrived;
 
-               // OpenGestureReader();
             }
         }
-
-        //void OpenGestureReader()
-        //{
-        //    this.gestureSource = new VisualGestureBuilderFrameSource(this._sensor, 0);
-
-        //    this.gestureSource.AddGesture(this.swipeForwardGesture);
-
-        //    this.gestureSource.TrackingIdLost += OnTrackingIdLost;
-
-        //    this.gestureReader = this.gestureSource.OpenReader();
-        //    this.gestureReader.IsPaused = true;
-        //    this.gestureReader.FrameArrived += OnGestureFrameArrived;
-        //}
 
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -110,8 +93,8 @@ namespace KinectHandTracking
                 {
                     foreach (var body in _bodies)
                     {
-
-                        // body.Dispose();
+                       
+                       // body.Dispose();
                     }
                 }
             }
@@ -121,40 +104,6 @@ namespace KinectHandTracking
                 _sensor.Close();
             }
         }
-
-        //void OnLoadGestureFromDb(object sender, RoutedEventArgs e)
-        //{
-        //    // we assume that this file exists and will load
-        //    VisualGestureBuilderDatabase db = new VisualGestureBuilderDatabase(
-        //      @"GestureDatabase.gbd");
-
-        //    // we assume that this gesture is in that database (it should be, it's the only
-        //    // gesture in there).
-        //    this.swipeForwardGesture =
-        //      db.AvailableGestures.Where(g => g.Name == "swipeForwardProgress").Single();
-        //}
-
-        //void OnTrackingIdLost(object sender, TrackingIdLostEventArgs e)
-        //{
-        //    this.gestureReader.IsPaused = true;
-        //}
-
-        //void OnGestureFrameArrived(object sender, VisualGestureBuilderFrameArrivedEventArgs e)
-        //{
-        //    using (var frame = e.FrameReference.AcquireFrame())
-        //    {
-        //        if (frame != null)
-        //        {
-        //            var continuousResults = frame.ContinuousGestureResults;
-
-        //            if ((continuousResults != null) &&
-        //              (continuousResults.ContainsKey(this.swipeForwardGesture)))
-        //            {
-        //                var result = continuousResults[this.swipeForwardGesture];
-        //            }
-        //        }
-        //    }
-        //}
 
         void OnChooseRed(object sender, RoutedEventArgs e)
         {
@@ -188,21 +137,6 @@ namespace KinectHandTracking
 
                     _bodies = new Body[frame.BodyFrameSource.BodyCount];
 
-                    var trackedBody = this._bodies.Where(b => b.IsTracked).FirstOrDefault();
-
-                    if (trackedBody != null)
-                    {
-                        if (this.gestureReader.IsPaused)
-                        {
-                            this.gestureSource.TrackingId = trackedBody.TrackingId;
-                            this.gestureReader.IsPaused = false;
-                        }
-                    }
-                    else
-                    {
-                        this.OnTrackingIdLost(null, null);
-                    }
-
                     frame.GetAndRefreshBodyData(_bodies);
 
                     foreach (var body in _bodies)
@@ -213,79 +147,91 @@ namespace KinectHandTracking
                             {
                                 // Find the joints
                                 Joint handRight = body.Joints[JointType.HandRight];
+                                Joint handLeft = body.Joints[JointType.HandLeft];
                                 Joint thumbRight = body.Joints[JointType.ThumbRight];
                                 Joint tipRight = body.Joints[JointType.HandTipRight];
+                                Joint elbowRight = body.Joints[JointType.ElbowRight];
+                                Joint elbowLeft = body.Joints[JointType.ElbowLeft];
 
-
-
-                                //Joint handLeft = body.Joints[JointType.HandLeft];
-                                //Joint thumbLeft = body.Joints[JointType.ThumbLeft];
-                                //Joint tipLeft = body.Joints[JointType.HandTipLeft];
-
-                                if (!writing)
+                                if ((handRight.Position.X < handLeft.Position.X)
+                                    && (elbowLeft.Position.X < elbowRight.Position.X)
+                                    && (elbowLeft.Position.Y < handRight.Position.Y))
                                 {
-                                    canvas.DrawHand(handRight);
-                                    //  canvas.DrawHand(handLeft);
-                                    //  canvas.DrawThumb(thumbRight);
-                                    //  canvas.DrawThumb(thumbLeft);
+                                    eraseTimer = eraseTimer == null ? Stopwatch.StartNew() : eraseTimer;
 
-                                    if (body.HandRightState == HandState.Lasso)
+                                    if (eraseTimer != null && eraseTimer.ElapsedMilliseconds >= 2000)
+                                    {
+                                        eraseTimer = null;
+                                        erase = true;
+                                        writing = false;
+                                        sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
+                                        erase = false;
+                                    }
+                                }
+                                else
+                                {
+                                    eraseTimer = null;
+                                    if (!writing)
+                                    {
+                                        canvas.DrawHand(handRight);
+
+                                        if (body.HandRightState == HandState.Lasso)
+                                        {
+                                            timer = timer == null ? Stopwatch.StartNew() : timer;
+                                            currWritingX = currWritingX == 0 ? tipRight.Position.X : currWritingX;
+                                            currWritingY = currWritingY == 0 ? tipRight.Position.Y : currWritingY;
+                                            if (tipRight.Position.X < currWritingX - 0.2 || tipRight.Position.X > currWritingX + 0.2
+                                                || tipRight.Position.Y < currWritingY - 0.2 || tipRight.Position.Y > currWritingY + 0.2)
+                                            {
+                                                timer = null;
+                                                //timer = Stopwatch.StartNew();
+                                            }
+                                            else if (timer != null && timer.ElapsedMilliseconds >= 1000)
+                                            {
+                                                timer = null;
+                                                writingDepth = tipRight.Position.Z;
+                                                writing = true;
+                                                currWritingX = 0;
+                                                currWritingY = 0;
+                                            }
+                                        }
+
+                                    }
+
+                                    if (body.HandRightState == HandState.Open)
                                     {
                                         timer = timer == null ? Stopwatch.StartNew() : timer;
-                                        currWritingX = currWritingX == 0 ? tipRight.Position.X : currWritingX;
-                                        currWritingY = currWritingY == 0 ? tipRight.Position.Y : currWritingY;
-                                        if (tipRight.Position.X < currWritingX - 0.4 || tipRight.Position.X > currWritingX + 0.4
-                                            || tipRight.Position.Y < currWritingY - 0.4 || tipRight.Position.Y > currWritingY + 0.4)
+                                        currStopWritingX = currStopWritingX == 0 ? handRight.Position.X : currStopWritingX;
+                                        currStopWritingY = currStopWritingY == 0 ? handRight.Position.Y : currStopWritingY;
+                                        if (handRight.Position.X < currStopWritingX - 0.2 || handRight.Position.X > currStopWritingX + 0.2
+                                            || handRight.Position.Y < currStopWritingY - 0.2 || handRight.Position.Y > currStopWritingY + 0.2)
                                         {
                                             timer = null;
                                             //timer = Stopwatch.StartNew();
                                         }
                                         else if (timer != null && timer.ElapsedMilliseconds >= 1000)
                                         {
+                                            writing = false;
+                                            sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                             timer = null;
-                                            writingDepth = tipRight.Position.Z;
-                                            writing = true;
-                                            currWritingX = 0;
-                                            currWritingY = 0;
+                                            currStopWritingX = 0;
+                                            currStopWritingY = 0;
                                         }
                                     }
 
-                                } 
+                                    canvas.DrawThumb(tipRight);
+                                    // canvas.DrawThumb(tipLeft);
 
-                                if (body.HandRightState == HandState.Open)
-                                {
-                                    timer = timer == null ? Stopwatch.StartNew() : timer;
-                                    currStopWritingX = currStopWritingX == 0 ? tipRight.Position.X : currStopWritingX;
-                                    currStopWritingY = currStopWritingY == 0 ? tipRight.Position.Y : currStopWritingY;
-                                    if (tipRight.Position.X < currStopWritingX - 0.4 || tipRight.Position.X > currStopWritingX + 0.4
-                                        || tipRight.Position.Y < currStopWritingY - 0.4 || tipRight.Position.Y > currStopWritingY + 0.4)
+                                    // tblLeftPos.Text = "X: " + tipLeft.Position.X.ToString() + " \nY: " + tipLeft.Position.Y.ToString() + " \nZ: " + tipLeft.Position.Z.ToString();
+                                    tblRightPos.Text = "X: " + tipRight.Position.X.ToString() + " \nY: " + tipRight.Position.Y.ToString() + " \nZ: " + tipRight.Position.Z.ToString();
+
+                                    sendTimer = sendTimer == null ? Stopwatch.StartNew() : sendTimer;
+                                    if (writing && sendTimer.ElapsedMilliseconds >= 30)
                                     {
-                                        timer = null;
-                                        //timer = Stopwatch.StartNew();
-                                    }
-                                    else if (timer != null && timer.ElapsedMilliseconds >= 1000)
-                                    {
-                                        writing = false;
                                         sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
-                                        timer = null;
-                                        currStopWritingX = 0;
-                                        currStopWritingY = 0;
+                                        sendTimer = null;
+                                        sendTimer = Stopwatch.StartNew();
                                     }
-                                }
-
-
-                                canvas.DrawThumb(tipRight);
-                                // canvas.DrawThumb(tipLeft);
-
-                                // tblLeftPos.Text = "X: " + tipLeft.Position.X.ToString() + " \nY: " + tipLeft.Position.Y.ToString() + " \nZ: " + tipLeft.Position.Z.ToString();
-                                tblRightPos.Text = "X: " + tipRight.Position.X.ToString() + " \nY: " + tipRight.Position.Y.ToString() + " \nZ: " + tipRight.Position.Z.ToString();
-
-                                sendTimer = sendTimer == null ? Stopwatch.StartNew() : sendTimer;
-                                if (writing && sendTimer.ElapsedMilliseconds >= 40)
-                                {
-                                    sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
-                                    sendTimer = null;
-                                    sendTimer = Stopwatch.StartNew();
                                 }
                             }
                         }
@@ -303,7 +249,8 @@ namespace KinectHandTracking
                 data["xValue"] = positionX;
                 data["yValue"] = positionY;
                 data["zValue"] = positionZ;
-                data["initZ"] = writingDepth.ToString();
+                data["initZ"] = writingDepth.ToString(); ;
+                data["erase"] = erase.ToString();
 
                 var response = wb.UploadValues(url, "POST", data);
             }
