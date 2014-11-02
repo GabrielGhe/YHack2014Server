@@ -32,7 +32,7 @@ namespace KinectHandTracking
         static Stopwatch timer = null;
         static Stopwatch sendTimer = null;
         static Stopwatch eraseTimer = null;
-        static string url = "http://localhost:3000/csharp/";
+        static string url = "http://172.26.5.118:3000/csharp/";
         //static string url = "http://terabites.azurewebsites.net/csharp/";
         static bool writing = false;
         static bool erase = false;
