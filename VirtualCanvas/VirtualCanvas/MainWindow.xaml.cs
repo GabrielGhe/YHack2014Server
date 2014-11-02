@@ -105,16 +105,6 @@ namespace KinectHandTracking
             }
         }
 
-        void OnChooseRed(object sender, RoutedEventArgs e)
-        {
-            currentColor.Text = "Red";
-        }
-
-        void OnChooseBlack(object sender, RoutedEventArgs e)
-        {
-            currentColor.Text = "Black";
-        }
-
         void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
         {
             var reference = e.FrameReference.AcquireFrame();
@@ -157,8 +147,10 @@ namespace KinectHandTracking
                                     && (elbowLeft.Position.X < elbowRight.Position.X)
                                     && (elbowLeft.Position.Y < handRight.Position.Y))
                                 {
+                                    canvas.DrawPoint(elbowRight);
+                                    canvas.DrawPoint(elbowLeft);
                                     eraseTimer = eraseTimer == null ? Stopwatch.StartNew() : eraseTimer;
-
+                                   
                                     if (eraseTimer != null && eraseTimer.ElapsedMilliseconds >= 1000)
                                     {
                                         eraseTimer = null;
