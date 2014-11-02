@@ -32,10 +32,12 @@ namespace KinectHandTracking
         static Stopwatch timer = null;
         static Stopwatch sendTimer = null;
         static Stopwatch eraseTimer = null;
+        static Stopwatch clapTimer = null;
         static string url = "http://172.26.5.118:3000/csharp/";
         //static string url = "http://terabites.azurewebsites.net/csharp/";
         static bool writing = false;
         static bool erase = false;
+        static bool clap = false;
         static double writingDepth;
         static double currWritingX = 0;
         static double currWritingY = 0;
@@ -143,7 +145,20 @@ namespace KinectHandTracking
                                 Joint elbowRight = body.Joints[JointType.ElbowRight];
                                 Joint elbowLeft = body.Joints[JointType.ElbowLeft];
 
-                                if ((handRight.Position.X < handLeft.Position.X)
+                                if (Math.Abs(handRight.Position.X - handLeft.Position.X) < 0.02
+                                    && Math.Abs(handRight.Position.Y - handLeft.Position.Y) < 0.02)
+                                {
+                                    clapTimer = clapTimer == null ? Stopwatch.StartNew() : eraseTimer;
+                                    if (clapTimer != null && clapTimer.ElapsedMilliseconds >= 250)
+                                    {
+                                        clapTimer = null;
+                                        clap = true;
+                                        writing = false;
+                                        sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
+                                        clap = false;
+                                    }
+                                } 
+                                else if ((handRight.Position.X < handLeft.Position.X)
                                     && (elbowLeft.Position.X < elbowRight.Position.X)
                                     && (elbowLeft.Position.Y < handRight.Position.Y))
                                 {
@@ -159,7 +174,7 @@ namespace KinectHandTracking
                                         sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                         erase = false;
                                     }
-                                }
+                                } 
                                 else
                                 {
                                     eraseTimer = null;
@@ -245,6 +260,7 @@ namespace KinectHandTracking
                 data["zValue"] = positionZ;
                 data["initZ"] = writingDepth.ToString(); ;
                 data["erase"] = erase.ToString();
+                data["clap"] = clap.ToString();
 
                 var response = wb.UploadValues(url, "POST", data);
             }
