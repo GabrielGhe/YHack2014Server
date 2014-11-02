@@ -16,9 +16,9 @@ var wasNotWriting = true;
 var wasAlreadyErase = false;
 
 // Color variables
-var colors = ['color_black','color_red'];
+var colors = ['#color_black','#color_red'];
 var color_value = ['#000000','#ff0000'];
-var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4);'];
+var colors_borders = ['1px solid rgba(0,0,0,0.4)','1px solid rgba(255,0,0,0.4)'];
 var color_selected = 0;
 
 /*
@@ -148,16 +148,16 @@ var color_selected = 0;
 		})
 
 		socket.on('changeColor', function(){
-			color_selected++;
-			var element = colors[color_selected%2];
-			var border  = colors_borders[color_selected%2];
+			color_selected = (color_selected + 1) % 2;
+			var element = colors[color_selected];
+			var border  = colors_borders[color_selected];
 
 			// Clear all previous borders
 			$('.color').css('border','none');
 			// Assign new border
-			$('#'+element).css('border',border);
+			$(element).css('border',border);
 
-      ctx.strokeStyle = color_value[color_selected%2];
+      ctx.strokeStyle = color_value[color_selected];
 		});
 
 		/*
@@ -166,17 +166,17 @@ var color_selected = 0;
 		 */
 		socket.on('toggleWriting', function(writing){
 			wasAlreadyErase = false;
-			if (writing){
+			if (writing) {
 				$("#writing_enable").css('display','block');
 				$("#writing_disable").css('display','none');
 
 				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
 				$('#user_notfication').attr('class','notification _green');
-				if(wasNotWriting){
-					$('#user_notfication').fadeIn(500)
-										  .delay(500)
+				if (wasNotWriting) {
+          wasNotWriting = false;
+					$('#user_notfication')
+                      .fadeIn(500)
 										  .fadeOut(500);
-					wasNotWriting = false;
 				}
 			} else {
 				$("#writing_enable").css('display','none');
@@ -185,11 +185,11 @@ var color_selected = 0;
 				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
 				$('#user_notfication').attr('class','notification _red');
 
-				if(!wasNotWriting){
-					$('#user_notfication').fadeIn(500)
-										  .delay(500)
+				if (!wasNotWriting) {
+          wasNotWriting = true;
+					$('#user_notfication')
+                      .fadeIn(500)
 										  .fadeOut(500);
-					wasNotWriting = true;
 				}
 			}
 		});
