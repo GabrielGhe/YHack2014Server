@@ -1,4 +1,6 @@
 ﻿using Microsoft.Kinect;
+using Microsoft.Kinect.VisualGestureBuilder;
+using Microsoft.Kinect.Wpf.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,6 +30,7 @@ namespace KinectHandTracking
     public partial class MainWindow : Window
     {
 
+        #region Cond vars
         static Stopwatch timer = null;
         static Stopwatch sendTimer = null;
         static string url = "http://172.26.5.118:3000/csharp/";
@@ -38,11 +41,17 @@ namespace KinectHandTracking
         static double currStopWritingX = 0;
         static double currStopWritingY = 0;
 
+        #endregion
+
         #region Members
 
         KinectSensor _sensor;
         MultiSourceFrameReader _reader;
         IList<Body> _bodies;
+
+        Gesture swipeForwardGesture;
+        VisualGestureBuilderFrameSource gestureSource;
+        VisualGestureBuilderFrameReader gestureReader;
 
         #endregion
 
@@ -56,7 +65,7 @@ namespace KinectHandTracking
 
         #endregion
 
-        #region Event handlers
+        #region Events handlers
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -70,7 +79,22 @@ namespace KinectHandTracking
 
                 _reader = _sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Depth | FrameSourceTypes.Infrared | FrameSourceTypes.Body);
                 _reader.MultiSourceFrameArrived += Reader_MultiSourceFrameArrived;
+
+                OpenGestureReader();
             }
+        }
+
+        void OpenGestureReader()
+        {
+            this.gestureSource = new VisualGestureBuilderFrameSource(this._sensor, 0);
+
+            this.gestureSource.AddGesture(this.swipeForwardGesture);
+
+            this.gestureSource.TrackingIdLost += OnTrackingIdLost;
+
+            this.gestureReader = this.gestureSource.OpenReader();
+            this.gestureReader.IsPaused = true;
+            this.gestureReader.FrameArrived += OnGestureFrameArrived;
         }
 
         private void Window_Closed(object sender, EventArgs e)
@@ -96,6 +120,50 @@ namespace KinectHandTracking
             {
                 _sensor.Close();
             }
+        }
+
+        void OnLoadGestureFromDb(object sender, RoutedEventArgs e)
+        {
+            // we assume that this file exists and will load
+            VisualGestureBuilderDatabase db = new VisualGestureBuilderDatabase(
+              @"GestureDatabase.gbd");
+
+            // we assume that this gesture is in that database (it should be, it's the only
+            // gesture in there).
+            this.swipeForwardGesture =
+              db.AvailableGestures.Where(g => g.Name == "swipeForwardProgress").Single();
+        }
+
+        void OnTrackingIdLost(object sender, TrackingIdLostEventArgs e)
+        {
+            this.gestureReader.IsPaused = true;
+        }
+
+        void OnGestureFrameArrived(object sender, VisualGestureBuilderFrameArrivedEventArgs e)
+        {
+            using (var frame = e.FrameReference.AcquireFrame())
+            {
+                if (frame != null)
+                {
+                    var continuousResults = frame.ContinuousGestureResults;
+
+                    if ((continuousResults != null) &&
+                      (continuousResults.ContainsKey(this.swipeForwardGesture)))
+                    {
+                        var result = continuousResults[this.swipeForwardGesture];
+                    }
+                }
+            }
+        }
+
+        void OnChooseRed(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        void OnChooseBlack(object sender, RoutedEventArgs e)
+        {
+
         }
 
         void Reader_MultiSourceFrameArrived(object sender, MultiSourceFrameArrivedEventArgs e)
@@ -198,7 +266,7 @@ namespace KinectHandTracking
 
                                 sendTimer = sendTimer == null ? Stopwatch.StartNew() : sendTimer;
 								if (writing && sendTimer.ElapsedMilliseconds >= 40)
-s                                { 
+                                { 
                                     sendData(tipRight.Position.X.ToString(), tipRight.Position.Y.ToString(), tipRight.Position.Z.ToString());
                                     sendTimer = null;
                                     sendTimer = Stopwatch.StartNew();
