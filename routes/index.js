@@ -1,8 +1,10 @@
+'use strict';
 
 /*
  * GET home page.
  */
 
+var User = require('./../models/user');
 var io = require('./socketController').emitter;
 
 exports.index = function(req, res){
@@ -10,7 +12,16 @@ exports.index = function(req, res){
 };
 
 exports.csharp = function(req, res) {
-  console.log("xvalue", req.body.xValue);
   io(req.body);
   res.end();
+};
+
+exports.users = function(req, res) {
+  User.find({}, function(err, users) {
+    if (!err) {
+      res.json(users);
+    } else {
+      res.json([]);
+    }
+  })
 };
