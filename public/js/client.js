@@ -151,7 +151,7 @@ var wasAlreadyErase = false;
 				$("#writing_enable").css('display','block');
 				$("#writing_disable").css('display','none');
 
-				$('#user_notfication').html('<i class="fa fa-check-square"></i>');
+				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
 				$('#user_notfication').attr('class','notification green');
 				if(wasNotWriting){
 					$('#user_notfication').fadeIn(500)
@@ -163,7 +163,7 @@ var wasAlreadyErase = false;
 				$("#writing_enable").css('display','none');
 				$("#writing_disable").css('display','block');
 
-				$('#user_notfication').html('<i class="fa fa-check-square"></i>');
+				$('#user_notfication').html('<i class="fa fa-paint-brush"></i>');
 				$('#user_notfication').attr('class','notification red');
 
 				if(!wasNotWriting){
